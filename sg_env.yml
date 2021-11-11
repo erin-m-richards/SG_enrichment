@@ -1,42 +1,50 @@
-name: sg
+name: swefs
 channels:
+  - anaconda
   - conda-forge
 dependencies:
-  - readline=8.1=h46c0cb4_0
-  - setuptools=58.5.3=py37h89c1867_0
-  - sqlite=3.36.0=h9cd32fc_2
-  - tk=8.6.11=h27826a3_1
-  - wheel=0.37.0=pyhd8ed1ab_1
-  - xz=5.2.5=h516909a_1
-  - zlib=1.2.11=h36c2ea0_1013
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=1_gnu
-  - ca-certificates=2021.10.8=ha878542_0
+  - ca-certificates=2020.10.14=0
   - ld_impl_linux-64=2.36.1=hea4e1c9_2
-  - libffi=3.4.2=h7f98852_5
-  - libgcc-ng=11.2.0=h1d223b6_11
-  - libgomp=11.2.0=h1d223b6_11
-  - libnsl=2.0.0=h7f98852_0
-  - libstdcxx-ng=11.2.0=he4da1e4_11
-  - libzlib=1.2.11=h36c2ea0_1013
+  - libffi=3.4.2=h9c3ff4c_1
+  - libgcc-ng=11.1.0=hc902ee8_8
+  - libgomp=11.1.0=hc902ee8_8
+  - libstdcxx-ng=11.1.0=h56837e0_8
   - ncurses=6.2=h58526e2_4
-  - openssl=3.0.0=h7f98852_2
-  - python==3.8.5
-  - pip
+  - openssl=1.1.1l=h7f98852_0
+  - pip=21.2.4=pyhd8ed1ab_0
+  - pycodestyle=2.7.0=pyhd8ed1ab_0
+  - python=3.9.7=hb7a2778_1_cpython
+  - python_abi=3.9=2_cp39
+  - pyyaml=6.0=py39h3811e60_0
+  - readline=8.1=h46c0cb4_0
+  - setuptools=58.0.4=py39hf3d152e_0
+  - snakeviz=2.1.1=pyhd8ed1ab_0
+  - sqlite=3.36.0=h9cd32fc_1
+  - time=1.8=h516909a_0
+  - tk=8.6.11=h27826a3_1
+  - tornado=6.1=py39h3811e60_2
+  - tzdata=2021a=he74cb21_1
+  - wheel=0.37.0=pyhd8ed1ab_1
+  - xz=5.2.5=h516909a_1
+  - yaml=0.2.5=h516909a_0
+  - zlib=1.2.11=h516909a_1010
   - pip:
-    - PyQt5
-    - PyQt5.sip
-    - numpy>=1.20.0
-    - numba>=0.43.1
-    - scipy
-    - torch>=1.6
-    - opencv-python-headless
-    - pyqtgraph>=0.11.0rc0
-    - natsort
-    - google-cloud-storage
-    - tqdm
-    - tifffile
-    - scikit-image
-    - scikit-learn
-    - cellpose
-prefix: /home/jovyan/.conda/envs/sg
+    - cellpose==0.5
+    - certifi==2021.10.8
+    - charset-normalizer==2.0.7
+    - idna==3.3
+    - llvmlite==0.37.0
+    - mxnet-mkl==1.6.0
+    - natsort==8.0.0
+    - numba==0.54.1
+    - numpy==1.20.3
+    - opencv-python-headless==4.5.4.58
+    - python-graphviz==0.8.4
+    - requests==2.26.0
+    - scipy==1.7.2
+    - tifffile==2021.11.2
+    - tqdm==4.62.3
+    - urllib3==1.26.7
+prefix: /home/jovyan/.conda/envs/swefs
