@@ -1,8 +1,6 @@
 """
 This library includes the following functions for image manipulation.
 
-read_image(): To read image files into the Python script.
-
 detect_cells(): To detect cells in the image with CellPose.
 
 find_object(): To detect objects in an image within a given cell_mask.
@@ -13,25 +11,6 @@ percent of overlap.
 count_objects(): To count objects in an image given a lower and an upper size limit.
 
 """
-
-import argparse
-import configparse
-
-
-def read_image(filename)
-    """
-    To read image files into the Python script.
-    
-    Parameters
-    ----------
-    filename = string of the full image file location
-
-    Returns
-    -------
-    image = NumPy array of the image file
-    """
-    
-    return image
 
     
 def detect_cells(image)
@@ -109,3 +88,12 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit)
     """
     
     return count
+
+
+def main():
+    filename = '/home/jovyan/SG_enrichment/demo/C2-onecell.tif'
+    image = read_image(filename)
+    
+
+if __name__ == "__main__"
+    main()
