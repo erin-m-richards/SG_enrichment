@@ -1,24 +1,5 @@
 import unittest
 import im_lib
-
-
-class ReadImageTest(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(clc):
-        print("\nRunning ReadImage class setUp...")
-
-    @classmethod
-    def tearDownClass(clc):
-        print("\nRunning ReadImage class tearDown...")
-
-    def setUp(self):
-        print("\nRunning setUp...")
-
-    def tearDown(self):
-        print("\nRunning tearDown...")
-    
-    def test_ri(self):
     
 
 class DetectCellsTest(unittest.TestCase):
