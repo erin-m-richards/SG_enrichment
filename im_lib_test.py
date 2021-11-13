@@ -2,15 +2,15 @@ import unittest
 import im_lib
     
 
-class DetectCellsTest(unittest.TestCase):
+class ReadImageTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(clc):
-        print("\nRunning DetectCells class setUp...")
+        print("\nRunning ReadImage class setUp...")
 
     @classmethod
     def tearDownClass(clc):
-        print("\nRunning DetectCells class tearDown...")
+        print("\nRunning ReadImage class tearDown...")
 
     def setUp(self):
         print("\nRunning setUp...")
@@ -18,7 +18,7 @@ class DetectCellsTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    def test_dc(self):
+    def test_ri(self):
     
     
 class FindObjectsTest(unittest.TestCase):
