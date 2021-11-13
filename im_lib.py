@@ -5,8 +5,6 @@ This library includes the following functions for image manipulation.
 
 read_image(): To read an image file into a NumPy array.
 
-detect_cells(): To detect cells in the image.
-
 find_object(): To detect objects in an image within a given cell_mask.
 
 find_overlap(): To find objects that occur in two channels and threshold for
@@ -15,6 +13,7 @@ percent of overlap.
 count_objects(): To count objects in an image given a lower and an upper size limit.
 
 """
+
 
 def read_image(filename):
     """
@@ -30,22 +29,6 @@ def read_image(filename):
     """
     
     return image
-
-    
-def detect_cells(image):
-    """
-    To detect cells in the image with CellPose.
-    
-    Parameters
-    ----------
-    image = full path of the NumPy array of the image file
-    
-    Returns
-    -------
-    cell_mask = logical NumPy array where 1 = cell, 0 = background
-    """
-    
-    return cell_mask
 
 
 def find_object(cell_mask, channel):
