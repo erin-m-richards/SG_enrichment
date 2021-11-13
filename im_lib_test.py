@@ -25,6 +25,13 @@ class ReadImageTest(unittest.TestCase):
         exp = "<class 'numpy.ndarray'>"
         self.assertEqual(res, exp)
     
+    def test_ri_twoCells(self):
+        filename = '/home/jovyan/SG_enrichment/demo/C2-twocells.npy'
+        image = im_lib.read_image(filename)
+        res = str(type(image))
+        exp = "<class 'numpy.ndarray'>"
+        self.assertEqual(res, exp)
+    
     
 class FindObjectsTest(unittest.TestCase):
 
