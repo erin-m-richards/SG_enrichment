@@ -28,6 +28,8 @@ def read_image(filename):
     image = NumPy array of the image
     """
     
+    image = numpy.array(filename)
+    
     return image
 
 
