@@ -1,7 +1,11 @@
+import numpy
+
 """
 This library includes the following functions for image manipulation.
 
-detect_cells(): To detect cells in the image with CellPose.
+read_image(): To read an image file into a NumPy array.
+
+detect_cells(): To detect cells in the image.
 
 find_object(): To detect objects in an image within a given cell_mask.
 
@@ -12,14 +16,29 @@ count_objects(): To count objects in an image given a lower and an upper size li
 
 """
 
-    
-def detect_cells(image)
+def read_image(filename):
     """
     To detect cells in the image with CellPose.
     
     Parameters
     ----------
-    image = NumPy array of the image file
+    filename = full path of the image file
+    
+    Returns
+    -------
+    image = NumPy array of the image
+    """
+    
+    return image
+
+    
+def detect_cells(image):
+    """
+    To detect cells in the image with CellPose.
+    
+    Parameters
+    ----------
+    image = full path of the NumPy array of the image file
     
     Returns
     -------
@@ -29,7 +48,7 @@ def detect_cells(image)
     return cell_mask
 
 
-def find_object(cell_mask, channel)
+def find_object(cell_mask, channel):
     """
     To detect objects in an image within a given cell_mask.
     
@@ -45,7 +64,7 @@ def find_object(cell_mask, channel)
     return object_mask
 
 
-def find_overlap(chA_mask, chB_mask, chA, chB, percent_overlap)
+def find_overlap(chA_mask, chB_mask, chA, chB, percent_overlap):
     """
     To find objects that occur in two channels and threshold for percent of overlap.
     
@@ -70,7 +89,7 @@ def find_overlap(chA_mask, chB_mask, chA, chB, percent_overlap)
     return overlap_mask
 
 
-def count_objects(object_mask, lower_size_limit, upper_size_limit)
+def count_objects(object_mask, lower_size_limit, upper_size_limit):
     """
     To count objects in an image given a lower and an upper size limit.
     
@@ -91,9 +110,7 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit)
 
 
 def main():
-    filename = '/home/jovyan/SG_enrichment/demo/C2-onecell.tif'
-    image = read_image(filename)
-    
+    filename = '/home/jovyan/SG_enrichment/demo/C2-onecell.npy'
 
-if __name__ == "__main__"
+if __name__ == "__main__":
     main()
