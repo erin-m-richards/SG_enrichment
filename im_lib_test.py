@@ -18,7 +18,12 @@ class ReadImageTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    def test_ri(self):
+    def test_ri_oneCell(self):
+        filename = '/home/jovyan/SG_enrichment/demo/C2-onecell.npy'
+        image = im_lib.read_image(filename)
+        res = str(type(image))
+        exp = "<class 'numpy.ndarray'>"
+        self.assertEqual(res, exp)
     
     
 class FindObjectsTest(unittest.TestCase):
@@ -37,7 +42,7 @@ class FindObjectsTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    def test_fobj(self):
+    #def test_fobj(self):
 
         
 class FindOverlapTest(unittest.TestCase):
@@ -56,7 +61,7 @@ class FindOverlapTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    def test_foverlap(self):
+    #def test_foverlap(self):
     
 
 class CountObjectsTest(unittest.TestCase):
@@ -75,7 +80,7 @@ class CountObjectsTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    def test_co(self):
+    #def test_co(self):
 
 
 if __name__ == "__main__":
