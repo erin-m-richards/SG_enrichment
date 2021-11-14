@@ -3,7 +3,9 @@ import numpy
 """
 This library includes the following functions for image manipulation.
 
-read_image(): To read an image file into a NumPy array.
+mask_cell(): To read a masked image file into a NumPy array.
+
+read_image(): To read an image file into Python as a greyscale Image.
 
 find_object(): To detect objects in an image within a given cell_mask.
 
@@ -15,9 +17,27 @@ count_objects(): To count objects in an image given a lower and an upper size li
 """
 
 
+def mask_cell(filename):
+    """
+    To read a masked image file into a NumPy array.
+    
+    Parameters
+    ----------
+    filename = full path of the NumPy file
+    
+    Returns
+    -------
+    image = NumPy array of the image
+    """
+    
+    cell_mask = numpy.array(filename)
+    
+    return cell_mask
+
+
 def read_image(filename):
     """
-    To detect cells in the image with CellPose.
+    To read an image file into Python as a greyscale Image.
     
     Parameters
     ----------
@@ -25,21 +45,21 @@ def read_image(filename):
     
     Returns
     -------
-    image = NumPy array of the image
+    image = greyscale Image of the image file
     """
-    
-    image = numpy.array(filename)
     
     return image
 
 
-def find_object(cell_mask, channel):
+def find_object(cell_mask, image):
     """
     To detect objects in an image within a given cell_mask.
     
     Parameters
     ----------
     cell_mask = logical NumPy array where 1 = cell, 0 = background
+    
+    image = 8-bit greyscale image
     
     Returns
     -------
