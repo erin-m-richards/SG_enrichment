@@ -2,6 +2,37 @@ import unittest
 import im_lib
     
 
+class MaskCellTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(clc):
+        print("\nRunning MaskCell class setUp...")
+
+    @classmethod
+    def tearDownClass(clc):
+        print("\nRunning MaskCell class tearDown...")
+
+    def setUp(self):
+        print("\nRunning setUp...")
+
+    def tearDown(self):
+        print("\nRunning tearDown...")
+        
+    def test_mc_oneCell(self):
+        filename = '/home/jovyan/SG_enrichment/demo/C2-onecell.npy'
+        cell_mask = im_lib.mask_cell(filename)
+        res = str(type(cell_mask))
+        exp = "<class 'numpy.ndarray'>"
+        self.assertEqual(res, exp)
+    
+    def test_mc_twoCells(self):
+        filename = '/home/jovyan/SG_enrichment/demo/C2-twocells.npy'
+        cell_mask = im_lib.mask_cell(filename)
+        res = str(type(cell_mask))
+        exp = "<class 'numpy.ndarray'>"
+        self.assertEqual(res, exp)
+
+
 class ReadImageTest(unittest.TestCase):
 
     @classmethod
@@ -19,14 +50,15 @@ class ReadImageTest(unittest.TestCase):
         print("\nRunning tearDown...")
         
     def test_ri_oneCell(self):
-        filename = '/home/jovyan/SG_enrichment/demo/C2-onecell.npy'
+        filename = '/home/jovyan/SG_enrichment/demo/C3-onecell.tif'
         image = im_lib.read_image(filename)
+        print(type(image))
         res = str(type(image))
-        exp = "<class 'numpy.ndarray'>"
+        exp = "<class 'PIL.image'>"
         self.assertEqual(res, exp)
     
     def test_ri_twoCells(self):
-        filename = '/home/jovyan/SG_enrichment/demo/C2-twocells.npy'
+        filename = '/home/jovyan/SG_enrichment/demo/C3-twocells.tif'
         image = im_lib.read_image(filename)
         res = str(type(image))
         exp = "<class 'numpy.ndarray'>"
@@ -49,9 +81,13 @@ class FindObjectsTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    #def test_fobj(self):
-
+    def test_fobj_oneCell(self):
+        filename = '/home/jovyan/SG_enrichment/demo/C2-onecell.npy'
+        image = im_lib.read_image(filename)
+        res = im_lib.find_object(image)
         
+        
+
 class FindOverlapTest(unittest.TestCase):
 
     @classmethod
