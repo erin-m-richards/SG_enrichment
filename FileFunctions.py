@@ -27,16 +27,21 @@ def input_parser():
     
     args_parsed = my_parser.parsed_args()
     
+    # handle if no config file listed
     if args_parsed.config == None:
         raise TypeError\
         (f" No config file was listed. Please specify a config file using '-c'.")
         sys.exit(1)
+    
+    # handle if the given directory does not exist
     try:
         config_file = configparser.ConfigParser()
         config_file.read(args_parsed.config)
     except FileNotFoundError:
         print(f"The config file that you listed {args_parsed.config=} could not be found.")
         sys.exit(1)
+    
+    # generate dictionary with all of the necessary inputs
     inputs = {
         'image_directory' : config_file['FILE LOCATIONS']['image_directory'],
         'out_put_location' : config_file['FILE LOCATIONS']['outputs_directory'],
