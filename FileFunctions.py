@@ -4,6 +4,17 @@ import argparse, configparser
 
 
 def input_parser():
+    """
+    PARAMETERS
+    ----------
+    None
+
+    RETURNS
+    ----------
+    inputs : dict
+        This dictionary contains all the inputs necessary inputs parsed from
+        command line or a config file.
+    """
     my_parser = argparse.ArgumentParser()
     
     my_parser.add_argument(
@@ -36,8 +47,7 @@ def input_parser():
         'num_groups' : int(config_file['EXPERIMENT INFO']['num_groups']),
         'group_names' : [config_file['EXPERIMENT INFO']['group_names']]
     }
-    
-
+    return inputs
 
 def sort_images(directory, C1_id='', C2_id='', C3_id=''):
     # check that the directory exists
