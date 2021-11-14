@@ -1,16 +1,51 @@
 import os
 import sys
-import argparser, configparser 
+import argparse, configparser 
+
+
+def input_parser():
+    my_parser = argparse.ArgumentParser()
+    
+    my_parser.add_argument(
+        '-c', '--config',
+        type=str,
+        action='store',
+        help='This option is where you specify the config file.',
+        required=True
+    )
+    
+    args_parsed = my_parser.parsed_args()
+    
+    if args_parsed.config == None:
+        raise TypeError\
+        (f" No config file was listed. Please specify a config file using '-c'.")
+        sys.exit(1)
+    try:
+        config_file = configparser.ConfigParser()
+        config_file.read(args_parsed.config)
+    except FileNotFoundError:
+        print(f"The config file that you listed {args_parsed.config=} could not be found.")
+        sys.exit(1)
+    inputs = {
+        'image_directory' : config_file['FILE LOCATIONS']['image_directory'],
+        'out_put_location' : config_file['FILE LOCATIONS']['outputs_directory'],
+        'experiment_name' : config_file['EXPERIMENT INFO']['experiment_name'],
+        'C1' : config_file['EXPERIMENT INFO']['C1'],
+        'C2' : config_file['EXPERIMENT INFO']['C2'],
+        'C3' : config_file['EXPERIMENT INFO']['C3'],
+        'num_groups' : int(config_file['EXPERIMENT INFO']['num_groups']),
+        'group_names' : [config_file['EXPERIMENT INFO']['group_names']]
+    }
+    
 
 
 def sort_images(directory, C1_id='', C2_id='', C3_id=''):
     # check that the directory exists
-    try os.chdir(directory):
-        if FileNotFoundError: 
-            print(f'The directory given: {directory} could not be found.')
-            sys.exit(1)
-        else:
-            pass
+    try: 
+        os.chdir(directory)
+    except FileNotFoundError: 
+        print(f'The directory given: {directory} could not be found.')
+        sys.exit(1)
     
     # remove non tif files from directory
     files = os.listdir(directory)
@@ -20,9 +55,9 @@ def sort_images(directory, C1_id='', C2_id='', C3_id=''):
             pass
         else:
             removed_files.append(files.pop(file))
-    if len(removed_files)=0:
+    if len(removed_files)==0:
         print("No files were removed from this directory.")
-    elif len(removed_files =! 0:
+    elif len(removed_files) != 0:
         print(f"Some of the files in this directory were removed because they were not the right file type: n/{removed_files}")
     
     #sort images by channel
@@ -32,13 +67,13 @@ def sort_images(directory, C1_id='', C2_id='', C3_id=''):
     not_added = []
     for file in files:
         if file[0:1] == 'C1':
-            C1_images.append(files.pop(file)
+            C1_images.append(files.pop(file))
         elif file[0:1] == 'C2':
-            C2_images.append(files.pop(file)       
+            C2_images.append(files.pop(file))       
         elif file[0:1] == 'C3':
-            C3_images.append(files.pop(file)
+            C3_images.append(files.pop(file))
         else:
-            not_added.append(files.pop(file)
+            not_added.append(files.pop(file))
                              
     os.mkdir(C1, C2, C3) # make directories
     
