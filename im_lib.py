@@ -1,7 +1,4 @@
 import numpy
-from PIL import Image
-from matplotlib import image
-from matplotlib import pyplot
 
 """
 This library includes the following functions for image manipulation.
@@ -32,8 +29,12 @@ def mask_cell(filename):
     -------
     image = NumPy array of the image
     """
-    
-    cell_mask = numpy.array(filename)
+
+    # Load whole file.
+    data = numpy.load(filename, allow_pickle=True).item()
+
+    # Pull out masks. 'outlines' is also an option.
+    cell_mask = data['masks']
     
     return cell_mask
 
@@ -118,10 +119,9 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
-    filename_mask = '/home/jovyan/SG_enrichment/demo/C2-onecell.npy'
-    filename_img = '/home/jovyan/SG_enrichment/demo/C3-onecell.tif'
+    filename_mask = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
+    #filename_img = '/home/jovyan/SG_enrichment/demo/C3-onecell.tif'
     cell_mask = mask_cell(filename_mask)
-    img = read_image(filename_image)
 
 if __name__ == "__main__":
     main()
