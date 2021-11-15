@@ -1,4 +1,5 @@
 import numpy
+from matplotlib import pyplot
 
 """
 This library includes the following functions for image manipulation.
@@ -33,8 +34,13 @@ def mask_cell(filename):
     # Load whole file.
     data = numpy.load(filename, allow_pickle=True).item()
 
-    # Pull out masks. 'outlines' is also an option.
+    # Pull out masks.
+    # Note: 'outlines' is also an option.
     cell_mask = data['masks']
+
+    # Visualize mask.
+    pyplot.imshow(cell_mask)
+    pyplot.show()
     
     return cell_mask
 
