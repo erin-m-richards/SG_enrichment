@@ -1,4 +1,4 @@
-import os
+import os, shutil
 import sys
 import argparse, configparser 
 
@@ -15,6 +15,7 @@ def input_parser():
         This dictionary contains all the inputs necessary inputs parsed from
         command line or a config file.
     """
+    
     my_parser = argparse.ArgumentParser()
     
     my_parser.add_argument(
@@ -54,6 +55,7 @@ def input_parser():
     }
     return inputs
 
+
 def sort_images(directory, C1_id='', C2_id='', C3_id=''):
     # check that the directory exists
     try: 
@@ -89,7 +91,31 @@ def sort_images(directory, C1_id='', C2_id='', C3_id=''):
             C3_images.append(files.pop(file))
         else:
             not_added.append(files.pop(file))
-                             
-    os.mkdir(C1, C2, C3) # make directories
+
+    # make directories for each type of image
+    sub_dirs = ['C1', 'C2','C3','removed_files']
+    full_paths = []
+    for folder in sub_dir:
+        folder = os.path.join(directory,folder)
+        os.mkdir(folder)
+        full_paths.append(folder)
+        
+    # move all files to their respective sub folders
+    for file in C1_images:
+        shutil.move(os.path.join(directory, file), os.path.join(full_paths[0], file))
+    for file in C2_images: 
+        shutil.move(os.path.join(directory, file), os.path.join(full_paths[1], file))  
+    for file in C3_images: 
+        shutil.move(os.path.join(directory, file), os.path.join(full_paths[2], file))
+    for file in removed_images: 
+        shutil.move(os.path.join(directory, file), os.path.join(full_paths[3], file))
+        
+    # get full file paths to return for only C1, C2 and C3
+    full_paths.remove[3]
+    return full_paths
+
+
+        
+        
     
     
