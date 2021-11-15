@@ -1,6 +1,8 @@
 import os, shutil  # for maniplulating files
+import csv  # for writing files
 import sys  # for exit codes
 import argparse, configparser  # for manipulating inputs
+from datetime import datetime  # for datestamping files
 
 
 def input_parser():
@@ -186,6 +188,54 @@ def matching_channels(full_paths): # pipe into csv to output what images were ma
              f"might be wrong. \n {matching}")
 
     return matched_images
+    
+
+def make_new_subfolder(parent_directory, folder_name):
+    full_path = os.path.join(parent_directory, folder_name)
+    isdir = os.isdir(full_path)
+    if isdir is False: 
+        os.mkdir(full_path)
+    else: 
+        pass
+    return full_path
+
+    
+    
+def write_to_csv(data_list, header_list, directory, experiment_name, data_in_file): # add check that for entry in data list, len==len header
+    """
+    PARAMETERS
+    ----------
+    data_list : list
+        This is a list where each item is a list of all row values.
+    header_list : list
+        This list has the header entries for each row. 
+    directory : str
+        This string is the full path to the directory where the csv file will
+        be saved.
+    experiment_name : str
+        This string is the experiment name given in the config file that will
+        be used to generate the filename.
+    data_in_file : str
+        This string will be used further specify the data contained in this "
+        f"file for the filename.
+    
+    RETURNS
+    ----------
+    matched_images_csv : str
+        This string is the full file path of the matched_images_csv. 
+    """
+    
+    os.chdir(directory)
+    today = date.now().strftime(%Y%m%d)
+    print(today)
+    filename = (f"{today}_{experiment_name}_{data_in_file}.csv")
+    with open(filename, 'wb') as file:
+        writer = csv.writer(file)
+        writer.writerow(header)
+        writer.writerows(data_list)
+    
+    
+    
     
     
     
