@@ -56,7 +56,7 @@ def input_parser():
     return inputs
 
 
-def sort_images(directory, C1_id='', C2_id='', C3_id=''):
+def sort_images(directory):
     # check that the directory exists
     try: 
         os.chdir(directory)
@@ -68,7 +68,8 @@ def sort_images(directory, C1_id='', C2_id='', C3_id=''):
     files = os.listdir(directory)
     removed_files = []
     for file in files:
-        if file[:4] == '.tif':
+        ext = os.path.splitext(file)[-1].lower()
+        if ext == '.tif':
             pass
         else:
             removed_files.append(files.pop(file))
@@ -117,5 +118,6 @@ def sort_images(directory, C1_id='', C2_id='', C3_id=''):
 
         
         
-    
-    
+# testing
+inputs = input_parser()
+
