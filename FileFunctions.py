@@ -140,7 +140,47 @@ def sort_images(directory):
     
     return full_paths
 
-       
+def matching_channels(full_paths): # pipe into csv to output what images were matched? write csv in function?
+    """
+    PARAMETERS
+    ----------
+    full_paths: list 
+        This is a list that contains the full paths for folders containing
+        images from each of the three channels. Designed to be the return
+        of sort_images(). 
+        
+    RETURNS
+    ----------
+    matched_images : list
+        This is a list where each item is a list containing the images from 
+        each channel that are being paired.
+    """
+    
+    # make lists from directories
+    C1_images = os.listdir(full_paths[0])
+    C2_images = os.listdir(full_paths[1])
+    C3_images = os.listdir(full_paths[2])
+    
+    matched_images = []
+    missing_matches = []
+    for C1_file in C1_images:
+        matching = [C1_filename]
+        image_id = C1_file[2:]
+        for C2_filename in C2_images:
+            if C2_filename[2:] == image_id:
+                matching.append(C2_filename)
+        for C3_filename in C3_images:
+            if C3_filename[2:] == image_id:
+                matching.append(C2_filename)
+        if len(matching) == 2:
+            matched_images.append(matching)
+        elif len matching < 2:
+            missing_matches.append(matching)
+        else:
+            raise IndexError(f"There were more than three images with the same
+                             f"name, something might be wrong. /n {matching}")
+    
+    
+    
+    
 # testing
-inputs = input_parser()
-sort_images(inputs['image_directory']) 
