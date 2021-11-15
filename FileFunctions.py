@@ -26,7 +26,7 @@ def input_parser():
         required=True
     )
     
-    args_parsed = my_parser.parsed_args()
+    args_parsed = my_parser.parse_args()
     
     # handle if no config file listed
     if args_parsed.config == None:
@@ -65,38 +65,38 @@ def sort_images(directory):
         sys.exit(1)
     
     # remove non tif files from directory
-    files = os.listdir(directory)
+    #files = os.listdir(directory)
+    files = [f for f in os.listdir(directory) if not f.startswith('.')]
     removed_files = []
     for file in files:
         ext = os.path.splitext(file)[-1].lower()
         if ext == '.tif':
             pass
         else:
-            removed_files.append(files.pop(file))
+            removed_files.append(file)
     if len(removed_files)==0:
-        print("No files were removed from this directory.")
+        print(f"No files were removed from this directory: {directory}")
     elif len(removed_files) != 0:
-        print(f"Some of the files in this directory were removed because they were not the right file type: n/{removed_files}")
+        print(f"Some of the files in this directory were removed because they were not the right file type, they can be found in the 'removed_files' folder: n/{removed_files}")
     
     #sort images by channel
     C1_images = []
     C2_images = []
     C3_images = []
-    not_added = []
     for file in files:
-        if file[0:1] == 'C1':
-            C1_images.append(files.pop(file))
-        elif file[0:1] == 'C2':
-            C2_images.append(files.pop(file))       
-        elif file[0:1] == 'C3':
-            C3_images.append(files.pop(file))
+        if file[0:2] == 'C1':
+            C1_images.append(file)
+        elif file[0:2] == 'C2':
+            C2_images.append(file)  
+        elif file[0:2] == 'C3':
+            C3_images.append(file)
         else:
-            not_added.append(files.pop(file))
+            removed_files.append(file)
 
     # make directories for each type of image
     sub_dirs = ['C1', 'C2','C3','removed_files']
     full_paths = []
-    for folder in sub_dir:
+    for folder in sub_dirs:
         folder = os.path.join(directory,folder)
         os.mkdir(folder)
         full_paths.append(folder)
@@ -108,11 +108,11 @@ def sort_images(directory):
         shutil.move(os.path.join(directory, file), os.path.join(full_paths[1], file))  
     for file in C3_images: 
         shutil.move(os.path.join(directory, file), os.path.join(full_paths[2], file))
-    for file in removed_images: 
+    for file in removed_files: 
         shutil.move(os.path.join(directory, file), os.path.join(full_paths[3], file))
         
     # get full file paths to return for only C1, C2 and C3
-    full_paths.remove[3]
+    del full_paths[3]
     return full_paths
 
 
@@ -120,4 +120,6 @@ def sort_images(directory):
         
 # testing
 inputs = input_parser()
+sort_images(inputs['image_directory']) 
+
 
