@@ -1,5 +1,6 @@
 import unittest
 import im_lib
+import numpy
     
 
 class MaskCellTest(unittest.TestCase):
@@ -18,18 +19,32 @@ class MaskCellTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    def test_mc_oneCell(self):
-        filename = '/home/jovyan/SG_enrichment/demo/C2-onecell.npy'
+    def test_mc_oneCellType(self):
+        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
         cell_mask = im_lib.mask_cell(filename)
         res = str(type(cell_mask))
         exp = "<class 'numpy.ndarray'>"
         self.assertEqual(res, exp)
     
-    def test_mc_twoCells(self):
-        filename = '/home/jovyan/SG_enrichment/demo/C2-twocells.npy'
+    def test_mc_twoCellsType(self):
+        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
         cell_mask = im_lib.mask_cell(filename)
         res = str(type(cell_mask))
         exp = "<class 'numpy.ndarray'>"
+        self.assertEqual(res, exp)
+
+    def test_mc_oneCellMask(self):
+        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
+        cell_mask = im_lib.mask_cell(filename)
+        res = numpy.amax(cell_mask)
+        exp = 1
+        self.assertEqual(res, exp)
+
+    def test_mc_twoCellsMask(self):
+        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
+        cell_mask = im_lib.mask_cell(filename)
+        res = numpy.amax(cell_mask)
+        exp = 2
         self.assertEqual(res, exp)
 
 
