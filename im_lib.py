@@ -1,4 +1,7 @@
 import numpy
+from PIL import Image
+from matplotlib import image
+from matplotlib import pyplot
 
 """
 This library includes the following functions for image manipulation.
@@ -48,10 +51,10 @@ def read_image(filename):
     image = greyscale Image of the image file
     """
     
-    return image
+    return img
 
 
-def find_object(cell_mask, image):
+def find_object(cell_mask, img):
     """
     To detect objects in an image within a given cell_mask.
     
@@ -115,7 +118,10 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
-    filename = '/home/jovyan/SG_enrichment/demo/C2-onecell.npy'
+    filename_mask = '/home/jovyan/SG_enrichment/demo/C2-onecell.npy'
+    filename_img = '/home/jovyan/SG_enrichment/demo/C3-onecell.tif'
+    cell_mask = mask_cell(filename_mask)
+    img = read_image(filename_image)
 
 if __name__ == "__main__":
     main()
