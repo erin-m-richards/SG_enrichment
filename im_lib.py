@@ -57,7 +57,9 @@ def read_image(filename):
     -------
     image = greyscale Image of the image file
     """
-    
+
+    img = filename
+
     return img
 
 
