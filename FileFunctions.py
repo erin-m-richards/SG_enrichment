@@ -161,26 +161,37 @@ def matching_channels(full_paths): # pipe into csv to output what images were ma
     C2_images = os.listdir(full_paths[1])
     C3_images = os.listdir(full_paths[2])
     
+    # loop through and find matches
     matched_images = []
     missing_matches = []
-    for C1_file in C1_images:
+    for C1_filename in C1_images:
         matching = [C1_filename]
-        image_id = C1_file[2:]
+        image_id = C1_filename[2:]
         for C2_filename in C2_images:
             if C2_filename[2:] == image_id:
                 matching.append(C2_filename)
+            if len(matching) > 2:
+                raise IndexError\
+                (f"More than 1 image in channel 2 matches this image in channel 1, something is wrong: \n {matching}")
         for C3_filename in C3_images:
             if C3_filename[2:] == image_id:
-                matching.append(C2_filename)
-        if len(matching) == 2:
+                matching.append(C3_filename)
+        if len(matching) == 3:
             matched_images.append(matching)
-        elif len matching < 2:
+        elif len(matching) < 3:
             missing_matches.append(matching)
         else:
-            raise IndexError(f"There were more than three images with the same
-                             f"name, something might be wrong. /n {matching}")
-    
+            raise IndexError\
+            (f"There were more than three images with the same name, something"
+             f"might be wrong. \n {matching}")
+
+    return matched_images
     
     
     
 # testing
+paths = ['/home/jovyan/SEFS/Project/SG_enrichment/TestImages/C1',
+         '/home/jovyan/SEFS/Project/SG_enrichment/TestImages/C2',
+         '/home/jovyan/SEFS/Project/SG_enrichment/TestImages/C3'
+        ]
+matching_channels(paths)
