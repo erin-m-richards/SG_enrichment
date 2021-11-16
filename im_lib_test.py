@@ -64,19 +64,18 @@ class ReadImageTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    def test_ri_oneCell_import(self):
-        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-onecell.tif'
+    def test_ri_oneCellType(self):
+        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
         image = im_lib.read_image(filename)
-        print(type(image))
         res = str(type(image))
-        exp = "<class 'PIL.TiffImagePlugin.TiffImageFile'>"
+        exp = "<class 'numpy.ndarray'>"
         self.assertEqual(res, exp)
     
-    def test_ri_twoCells_import(self):
-        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-onecell.tif'
+    def test_ri_twoCellsType(self):
+        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
         image = im_lib.read_image(filename)
         res = str(type(image))
-        exp = "<class 'PIL.TiffImagePlugin.TiffImageFile'>"
+        exp = "<class 'numpy.ndarray'>"
         self.assertEqual(res, exp)
     
     
