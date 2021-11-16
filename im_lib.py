@@ -2,19 +2,7 @@ import numpy
 from matplotlib import pyplot
 
 """
-This library includes the following functions for image manipulation.
-
-mask_cell(): To read a masked image file into a NumPy array.
-
-read_image(): To read an image file into Python as a greyscale Image.
-
-find_object(): To detect objects in an image within a given cell_mask.
-
-find_overlap(): To find objects that occur in two channels and threshold for
-percent of overlap.
-
-count_objects(): To count objects in an image given a lower and an upper size limit.
-
+This library includes functions for image manipulation.
 """
 
 
@@ -38,10 +26,6 @@ def mask_cell(filename):
     # Note: 'outlines' is also an option.
     cell_mask = data['masks']
 
-    # Visualize mask.
-    pyplot.imshow(cell_mask)
-    pyplot.show()
-    
     return cell_mask
 
 
@@ -55,10 +39,10 @@ def read_image(filename):
     
     Returns
     -------
-    image = greyscale Image of the image file
+    image = NumPy array of the image
     """
 
-    img = filename
+    img = pyplot.imread(filename)
 
     return img
 
@@ -128,8 +112,9 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 def main():
     filename_mask = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
-    #filename_img = '/home/jovyan/SG_enrichment/demo/C3-onecell.tif'
+    filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
     cell_mask = mask_cell(filename_mask)
+    img = read_image(filename_img)
 
 if __name__ == "__main__":
     main()
