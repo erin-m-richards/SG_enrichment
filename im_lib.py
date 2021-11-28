@@ -88,22 +88,27 @@ def read_image(filename):
     return img
 
 
-def find_object(cell_mask, img):
+def find_object(maskA):
     """
-    To detect objects in an image within a given cell_mask.
+    To detect objects in an image where two masks overlap.
     
     Parameters
     ----------
-    cell_mask = logical NumPy array where 1 = cell, 0 = background
-    
-    image = 8-bit greyscale image
+    maskA = NumPy array where integer = cell, 0 = background
+
+    maskB = NumPy array where integer = cell, 0 = background
     
     Returns
     -------
     object_mask = logical NumPy array where 1 = object, 0 = background
     """
-    
-    return object_mask
+
+    # Turn masks into simple logical masks, 1 = cell, 0 = background.
+    maskA_log = numpy.where(maskA > 0, 1, 0)
+    pyplot.imshow(maskA_log)
+    pyplot.show()
+
+    return maskA_log
 
 
 def find_overlap(chA_mask, chB_mask, chA, chB, percent_overlap):
@@ -152,11 +157,12 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
-    filename_mask = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
-    filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
+    filename_mask = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+    filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells.tif'
     cell_mask = mask_cell(filename_mask)
     img = read_image(filename_img)
     show_moi(img, cell_mask)
+    mask = find_object(cell_mask)
 
 if __name__ == "__main__":
     main()
