@@ -1,9 +1,29 @@
 import numpy
 from matplotlib import pyplot
+from opencv import
 
 """
 This library includes functions for image manipulation.
 """
+
+
+def show_moi(image, mask):
+    """
+    To show a mask overlaid on an image.
+
+    Parameters
+    ----------
+    image = background image as a NumPy array that will be shown at 100%
+    intensity
+
+    mask = mask as a NumPy array that will be shown at 50% intensity
+
+    Returns
+    -------
+    None, just shows an image
+    """
+
+    return None
 
 
 def mask_cell(filename):
