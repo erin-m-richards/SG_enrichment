@@ -1,29 +1,6 @@
 import unittest
 import im_lib
 import numpy
-    
-classShowMOITest(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(clc):
-        print("\nRunning ShowMOI class setUp...")
-
-    @classmethod
-    def tearDownClass(clc):
-        print("\nRunning ShowMOI class tearDown...")
-
-    def setUp(self):
-        print("\nRunning setUp...")
-
-    def tearDown(self):
-        print("\nRunning tearDown...")
-
-    def test_sm_Type(self):
-        img_filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
-        image = im_lib.read_image(img_filename)
-        mask_filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
-        mask = im_lib.mask_cell(mask_filename)
-
 
 
 class MaskCellTest(unittest.TestCase):
