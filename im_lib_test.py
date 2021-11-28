@@ -95,10 +95,19 @@ class FindObjectsTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    #def test_fobj_oneCell(self):
-        #filename = '/home/jovyan/SG_enrichment/demo/C2-onecell.npy'
-        #image = im_lib.read_image(filename)
-        #res = im_lib.find_object(image)
+    def test_fobj_oneCellC2(self):
+        C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
+        C2_mask = im_lib.mask_cell(C2)
+        res = numpy.amax(C2_mask)
+        exp = 1
+        self.assertEqual(res, exp)
+
+    def test_fobj_oneCellC3(self):
+        C3 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-onecell_seg.npy'
+        C3_mask = im_lib.mask_cell(C3)
+        res = numpy.amax(C3_mask)
+        exp = 1
+        self.assertEqual(res, exp)
         
 
 class FindOverlapTest(unittest.TestCase):
