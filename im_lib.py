@@ -1,6 +1,6 @@
 import numpy
 from matplotlib import pyplot
-from cv2 import addWeighted
+import cv2
 
 """
 This library includes functions for image manipulation.
@@ -23,8 +23,8 @@ def show_moi(image, mask):
     None, just shows an image
     """
 
-    overlay = addWeighted(image, 0.05, mask, 1.0, 0)
-    pyplot.imshow(overlay)
+    overlay = cv2.addWeighted(image, 0.03, mask, 1.0, 0)
+    pyplot.imshow(overlay, cmap='gray')
     pyplot.show()
 
     return None
