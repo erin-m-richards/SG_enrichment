@@ -51,14 +51,14 @@ def mask_cell(filename):
 
     # Segmenting C3 based on 6xA_004, 005, 006, 008:
     # radius = 300 pixels
-    # model = cyto2
+    # model = cyto
     # Note: Segments cells from background but not from each other.
 
     # From command line for C2:
     # python -m cellpose --dir ~/images/ --pretrained_model cyto2 --diameter 250
 
     # From command line for C3:
-    # python -m cellpose --dir ~/images/ --pretrained_model cyto2 --diameter 300
+    # python -m cellpose --dir ~/images/ --pretrained_model cyto --diameter 300
 
     # Load whole file.
     data = numpy.load(filename, allow_pickle=True).item()
