@@ -77,38 +77,7 @@ class ReadImageTest(unittest.TestCase):
         res = str(type(image))
         exp = "<class 'numpy.ndarray'>"
         self.assertEqual(res, exp)
-    
-    
-class FindObjectsTest(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(clc):
-        print("\nRunning FindObjects class setUp...")
-
-    @classmethod
-    def tearDownClass(clc):
-        print("\nRunning FindObjects class tearDown...")
-
-    def setUp(self):
-        print("\nRunning setUp...")
-
-    def tearDown(self):
-        print("\nRunning tearDown...")
-        
-    def test_fobj_oneCellC2(self):
-        C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
-        C2_mask = im_lib.mask_cell(C2)
-        res = numpy.amax(C2_mask)
-        exp = 1
-        self.assertEqual(res, exp)
-
-    def test_fobj_oneCellC3(self):
-        C3 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-onecell_seg.npy'
-        C3_mask = im_lib.mask_cell(C3)
-        res = numpy.amax(C3_mask)
-        exp = 1
-        self.assertEqual(res, exp)
-        
 
 class FindOverlapTest(unittest.TestCase):
 
@@ -126,7 +95,7 @@ class FindOverlapTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    #def test_foverlap(self):
+    #def test_fo_C3onecell(self):
     
 
 class CountObjectsTest(unittest.TestCase):
