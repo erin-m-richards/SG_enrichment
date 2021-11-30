@@ -1,3 +1,5 @@
+from typing import Tuple, Any
+
 import numpy
 from matplotlib import pyplot
 import cv2
@@ -115,8 +117,8 @@ def find_overlap(chA_mask, chB_mask, percent_overlap):
     chB_log = numpy.where(chB_mask > 0, 1, 0)
     print(f"Max value in Channel B mask is {numpy.amax(chB_log)}.")
 
-    # Make a dummy overlap mask.
-    #overlap_mask =
+    # Make a dummy overlap mask the same size as Channel A mask.
+    overlap_mask = numpy.zeros(numpy.ndarray.shape(chA_mask))
 
     # Iterate over number of masks in channel A.
     for mask in chA_num_masks:
@@ -126,18 +128,17 @@ def find_overlap(chA_mask, chB_mask, percent_overlap):
         # Makes a list of tuples with each tuple being an xy position.
 
         # For each xy position in chA_mask, see if chB_mask is true.
-        for xy in maskA_xy:
-            x = maskA_xy[int(xy)][0]
-            y = maskA_xy[int(xy)][1]
+        for xy in maskA_xy:  # xy is a tuple.
+            x = maskA_xy[xy[0]]
+            y = maskA_xy[xy[1]]
 
             # If chB_mask is false at xy, make overlap_mask false at xy.
-            if chB_log[x][y] == 0
-                overlap_mask[x][y] == 0
-            if chB_log[x][y] == 1
-                overlap_mask[x][y] = chA_mask[x][y]  # To keep masks separate.
+            if chB_log[x,y] == 0
+                overlap_mask[x,y] = 0
 
-        # Find size of mask in channel A in pixels.
-        maskA_size = len(maskA_xy)
+            # If chB_mask is true at xy, make overlap_mask = int at xy.
+            if chB_log[x,y] == 1
+                overlap_mask[x][y] = chA_mask[x][y]  # To keep masks separate.
 
     return overlap_mask
 
