@@ -133,12 +133,12 @@ def find_overlap(chA_mask, chB_mask, percent_overlap):
             y = maskA_xy[xy[1]]
 
             # If chB_mask is false at xy, make overlap_mask false at xy.
-            if chB_log[x,y] == 0
-                overlap_mask[x,y] = 0
+            if chB_log[x, y] == 0:
+                overlap_mask[x, y] = 0
 
             # If chB_mask is true at xy, make overlap_mask = int at xy.
-            if chB_log[x,y] == 1
-                overlap_mask[x][y] = chA_mask[x][y]  # To keep masks separate.
+            if chB_log[x, y] == 1:
+                overlap_mask[x, y] = chA_mask[x, y]  # To keep masks separate.
 
     return overlap_mask
 
