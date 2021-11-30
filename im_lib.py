@@ -115,16 +115,29 @@ def find_overlap(chA_mask, chB_mask, percent_overlap):
     chB_log = numpy.where(chB_mask > 0, 1, 0)
     print(f"Max value in Channel B mask is {numpy.amax(chB_log)}.")
 
+    # Make a dummy overlap mask.
+    #overlap_mask =
+
     # Iterate over number of masks in channel A.
     for mask in chA_num_masks:
-        # Find index/position of mask in channel A.
-        mask_index = numpy.where(chA_mask == mask)
-        mask_xy = list(zip(mask_index[0], mask_index[1]))
-        print(mask_xy)
+        # Find index/position of masked pixels in channel A.
+        maskA_index = numpy.where(chA_mask == mask)
+        maskA_xy = list(zip(maskA_index[0], maskA_index[1]))
+        # Makes a list of tuples with each tuple being an xy position.
 
         # For each xy position in chA_mask, see if chB_mask is true.
-        #for xy in mask_xy:
-            #if chB_log()
+        for xy in maskA_xy:
+            x = maskA_xy[int(xy)][0]
+            y = maskA_xy[int(xy)][1]
+
+            # If chB_mask is false at xy, make overlap_mask false at xy.
+            if chB_log[x][y] == 0
+                overlap_mask[x][y] == 0
+            if chB_log[x][y] == 1
+                overlap_mask[x][y] = chA_mask[x][y]  # To keep masks separate.
+
+        # Find size of mask in channel A in pixels.
+        maskA_size = len(maskA_xy)
 
     return overlap_mask
 
@@ -150,14 +163,11 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
-    filename_mask = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
-    filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
-    cell_mask = mask_cell(filename_mask)
-    img = read_image(filename_img)
-    show_moi(img, cell_mask)
-    mask = find_object(cell_mask)
-    mask_max = numpy.amax(mask)
-    print(mask_max)
+    filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
+    filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+    maskA = mask_cell(filename_maskA)
+    maskB = mask_cell(filename_maskB)
+    overlap = find_overlap(maskA, maskB, 0.5)
 
 if __name__ == "__main__":
     main()
