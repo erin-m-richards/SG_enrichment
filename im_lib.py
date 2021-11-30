@@ -88,42 +88,16 @@ def read_image(filename):
     return img
 
 
-def find_object(maskA):
+def find_overlap(chA_mask, chB_mask, percent_overlap):
     """
-    To detect objects in an image where two masks overlap.
+    To find objects that occur in two channels and threshold for percent of
+    overlap.
     
     Parameters
     ----------
-    maskA = NumPy array where integer = cell, 0 = background
-
-    maskB = NumPy array where integer = cell, 0 = background
+    chA_mask = NumPy array where non-zero integer = object in channelA
     
-    Returns
-    -------
-    object_mask = logical NumPy array where 1 = object, 0 = background
-    """
-
-    # Turn masks into simple logical masks, 1 = cell, 0 = background.
-    maskA_log = numpy.where(maskA > 0, 1, 0)
-    pyplot.imshow(maskA_log)
-    pyplot.show()
-
-    return maskA_log
-
-
-def find_overlap(chA_mask, chB_mask, chA, chB, percent_overlap):
-    """
-    To find objects that occur in two channels and threshold for percent of overlap.
-    
-    Parameters
-    ----------
-    chA_mask = logical NumPy array where 1 = object in chA
-    
-    chB_mask = logical NumPy array where 1 = object in chB
-    
-    chA = integer for channel A
-    
-    chB = integer for channel B
+    chB_mask = NumPy array where non-zero integer = object in channelB
     
     percent_overlap = float for desired amount of overlap between chA_mask and
     chB_mask, 1 = 100% overlap
@@ -132,7 +106,26 @@ def find_overlap(chA_mask, chB_mask, chA, chB, percent_overlap):
     -------
     overlap_mask = logical NumPy array where 1 = object in both channels
     """
-    
+
+    # Count number of masks in channel A.
+    chA_num_masks = numpy.amax(chA_mask)
+    print(f"Number of masks in Channel A is {chA_num_masks}.")
+
+    # Turn channel B mask into a simple logical mask.
+    chB_log = numpy.where(chB_mask > 0, 1, 0)
+    print(f"Max value in Channel B mask is {numpy.amax(chB_log)}.")
+
+    # Iterate over number of masks in channel A.
+    for mask in chA_num_masks:
+        # Find index/position of mask in channel A.
+        mask_index = numpy.where(chA_mask == mask)
+        mask_xy = list(zip(mask_index[0], mask_index[1]))
+        print(mask_xy)
+
+        # For each xy position in chA_mask, see if chB_mask is true.
+        #for xy in mask_xy:
+            #if chB_log()
+
     return overlap_mask
 
 
@@ -157,12 +150,14 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
-    filename_mask = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
-    filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells.tif'
+    filename_mask = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
+    filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
     cell_mask = mask_cell(filename_mask)
     img = read_image(filename_img)
     show_moi(img, cell_mask)
     mask = find_object(cell_mask)
+    mask_max = numpy.amax(mask)
+    print(mask_max)
 
 if __name__ == "__main__":
     main()
