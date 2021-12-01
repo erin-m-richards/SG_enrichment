@@ -90,7 +90,7 @@ def read_image(filename):
     return img
 
 
-def find_overlap(chA_mask, chB_mask, percent_overlap):
+def find_overlap(chA_mask, chB_mask):
     """
     To find objects that occur in two channels and threshold for percent of
     overlap.
@@ -110,15 +110,16 @@ def find_overlap(chA_mask, chB_mask, percent_overlap):
     """
 
     # Count number of masks in channel A.
-    chA_num_masks = numpy.amax(chA_mask)
-    print(f"Number of masks in Channel A is {chA_num_masks}.")
+    chA_num_masks = int(numpy.amax(chA_mask))
 
     # Turn channel B mask into a simple logical mask.
     chB_log = numpy.where(chB_mask > 0, 1, 0)
-    print(f"Max value in Channel B mask is {numpy.amax(chB_log)}.")
+
+    # Get matrix size of Channel A mask.
+    matrix_size = numpy.shape(chA_mask)
 
     # Make a dummy overlap mask the same size as Channel A mask.
-    overlap_mask = numpy.zeros(numpy.ndarray.shape(chA_mask))
+    overlap_mask = numpy.zeros(matrix_size)
 
     # Iterate over number of masks in channel A.
     for mask in chA_num_masks:
@@ -139,6 +140,9 @@ def find_overlap(chA_mask, chB_mask, percent_overlap):
             # If chB_mask is true at xy, make overlap_mask = int at xy.
             if chB_log[x, y] == 1:
                 overlap_mask[x, y] = chA_mask[x, y]  # To keep masks separate.
+
+    pyplot.imshow(overlap_mask, cmap='gray')
+    pyplot.show()
 
     return overlap_mask
 
@@ -168,7 +172,7 @@ def main():
     filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
     maskA = mask_cell(filename_maskA)
     maskB = mask_cell(filename_maskB)
-    overlap = find_overlap(maskA, maskB, 0.5)
+    overlap = find_overlap(maskA, maskB)
 
 if __name__ == "__main__":
     main()
