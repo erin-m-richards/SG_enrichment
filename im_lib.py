@@ -127,7 +127,6 @@ def find_overlap(chA_mask, chB_mask, overlap_percent):
     # Make a dummy overlap mask the same size as channelA mask.
     overlap_mask = numpy.zeros(matrix_size)
 
-    # Iterate over number of masks in channelA.
     for mask in range(chA_num_masks):
         # Find index/position of masked pixels in channelA.
         maskA_index = numpy.where(chA_mask == (mask + 1))  # Because indexing starts at 0.
@@ -146,7 +145,16 @@ def find_overlap(chA_mask, chB_mask, overlap_percent):
             if chB_log[xy[0], xy[1]] == 1:
                 overlap_mask[xy[0], xy[1]] = chA_mask[xy[0], xy[1]]  # To keep masks separate.
 
-        # Filter for overlap percent between overlap mask and chA_mask.
+        # Filter overlap masks for percent of overlap with maskA.
+        maskA_area = len(maskA_xy)  # Find number of pixels in maskA.
+        print(f'Pixel area in maskA: ', maskA_area)
+
+        overlap_index = numpy.where(overlap_mask == (mask + 1))  # Because indexing starts at 0.
+        overlap_xy = list(zip(overlap_index[0], overlap_index[1]))
+        # Makes a list of tuples with each tuple being an xy position.
+        overlap_mask_size = len(overlap_xy)  # Find number of pixels in overlap_mask.
+
+        print(f'Pixel area in maskA: ', overlap_mask_size)
 
     return overlap_mask
 
