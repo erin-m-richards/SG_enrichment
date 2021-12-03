@@ -111,6 +111,7 @@ def find_overlap(chA_mask, chB_mask):
 
     # Count number of masks in channel A.
     chA_num_masks = int(numpy.amax(chA_mask))
+    print(range(chA_num_masks))
 
     # Turn channel B mask into a simple logical mask.
     chB_log = numpy.where(chB_mask > 0, 1, 0)
@@ -122,27 +123,23 @@ def find_overlap(chA_mask, chB_mask):
     overlap_mask = numpy.zeros(matrix_size)
 
     # Iterate over number of masks in channel A.
-    for mask in chA_num_masks:
+    for mask in range(chA_num_masks):
         # Find index/position of masked pixels in channel A.
-        maskA_index = numpy.where(chA_mask == mask)
+        maskA_index = numpy.where(chA_mask == (mask + 1))  # Because indexing starts at 0.
         maskA_xy = list(zip(maskA_index[0], maskA_index[1]))
         # Makes a list of tuples with each tuple being an xy position.
 
         # For each xy position in chA_mask, see if chB_mask is true.
         for xy in maskA_xy:  # xy is a tuple.
-            x = maskA_xy[xy[0]]
-            y = maskA_xy[xy[1]]
 
             # If chB_mask is false at xy, make overlap_mask false at xy.
-            if chB_log[x, y] == 0:
-                overlap_mask[x, y] = 0
+            if chB_log[xy[0], xy[1]] == 0:
+                overlap_mask[xy[0], xy[1]] = 0
 
             # If chB_mask is true at xy, make overlap_mask = int at xy.
-            if chB_log[x, y] == 1:
-                overlap_mask[x, y] = chA_mask[x, y]  # To keep masks separate.
-
-    pyplot.imshow(overlap_mask, cmap='gray')
-    pyplot.show()
+            # Will work if chA_mask is false at this point, too.
+            if chB_log[xy[0], xy[1]] == 1:
+                overlap_mask[xy[0], xy[1]] = chA_mask[xy[0], xy[1]]  # To keep masks separate.
 
     return overlap_mask
 
@@ -169,14 +166,17 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 def main():
     filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
-    filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
-    #filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
-    maskA = mask_cell(filename_maskA)
-    img = read_image(filename_img)
+    filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+    #filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
 
-    show_moi(img, maskA)
-    #maskB = mask_cell(filename_maskB)
-    #overlap = find_overlap(maskA, maskB)
+    maskA = mask_cell(filename_maskA)
+    maskB = mask_cell(filename_maskB)
+
+    #img = read_image(filename_img)
+    #show_moi(img, maskA)
+
+    overlap = find_overlap(maskA, maskB)
+
 
 if __name__ == "__main__":
     main()
