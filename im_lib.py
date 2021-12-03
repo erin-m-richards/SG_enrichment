@@ -95,7 +95,7 @@ def read_image(filename):
     return img
 
 
-def find_overlap(chA_mask, chB_mask):
+def find_overlap(chA_mask, chB_mask, overlap_percent):
     """
     To find objects that occur in two channels and threshold for percent of
     overlap.
@@ -103,6 +103,7 @@ def find_overlap(chA_mask, chB_mask):
     Parameters
     ----------
     chA_mask = NumPy array where non-zero integer = object in channelA
+    There should be less masked objects in channelA than there are in channelB.
     
     chB_mask = NumPy array where non-zero integer = object in channelB
     
@@ -114,21 +115,21 @@ def find_overlap(chA_mask, chB_mask):
     overlap_mask = logical NumPy array where 1 = object in both channels
     """
 
-    # Count number of masks in channel A.
+    # Count number of masks in channelA.
     chA_num_masks = int(numpy.amax(chA_mask))
 
-    # Turn channel B mask into a simple logical mask.
+    # Turn channelB mask into a simple logical mask.
     chB_log = numpy.where(chB_mask > 0, 1, 0)
 
-    # Get matrix size of Channel A mask.
+    # Get matrix size of channelA mask.
     matrix_size = numpy.shape(chA_mask)
 
-    # Make a dummy overlap mask the same size as Channel A mask.
+    # Make a dummy overlap mask the same size as channelA mask.
     overlap_mask = numpy.zeros(matrix_size)
 
-    # Iterate over number of masks in channel A.
+    # Iterate over number of masks in channelA.
     for mask in range(chA_num_masks):
-        # Find index/position of masked pixels in channel A.
+        # Find index/position of masked pixels in channelA.
         maskA_index = numpy.where(chA_mask == (mask + 1))  # Because indexing starts at 0.
         maskA_xy = list(zip(maskA_index[0], maskA_index[1]))
         # Makes a list of tuples with each tuple being an xy position.
@@ -144,6 +145,8 @@ def find_overlap(chA_mask, chB_mask):
             # Will work if chA_mask is false at this point, too.
             if chB_log[xy[0], xy[1]] == 1:
                 overlap_mask[xy[0], xy[1]] = chA_mask[xy[0], xy[1]]  # To keep masks separate.
+
+        # Filter for overlap percent between overlap mask and chA_mask.
 
     return overlap_mask
 
