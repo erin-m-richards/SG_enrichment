@@ -8,10 +8,15 @@ This library includes functions for image manipulation.
 """
 
 
-def show_moi(image, mask):
+def show_moi(img1, img2, img3):
     """
     To show a mask overlaid on an image.
-    Mask is in peach, image is in green.
+
+    For comparing a mask to an image: (image*0.001, mask*0.2, image*0.001)
+    image in pink (white is more intense), mask in green.
+
+    For comparing masks to overlap mask: (maskA*0.5, overlap*0.5, maskB*0.1)
+    maskB in blue, maskA in red, overlap in yellow.
 
     Parameters
     ----------
@@ -25,7 +30,7 @@ def show_moi(image, mask):
     None, just shows an image
     """
 
-    overlay = numpy.dstack((mask*0.4, image*0.001, mask*0.001))
+    overlay = numpy.dstack((img1, img2, img3))
     pyplot.imshow(overlay)
     pyplot.show()
 
@@ -111,7 +116,6 @@ def find_overlap(chA_mask, chB_mask):
 
     # Count number of masks in channel A.
     chA_num_masks = int(numpy.amax(chA_mask))
-    print(range(chA_num_masks))
 
     # Turn channel B mask into a simple logical mask.
     chB_log = numpy.where(chB_mask > 0, 1, 0)
@@ -167,15 +171,16 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 def main():
     filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
     filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
-    #filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
+    filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
 
     maskA = mask_cell(filename_maskA)
     maskB = mask_cell(filename_maskB)
 
-    #img = read_image(filename_img)
-    #show_moi(img, maskA)
+    img = read_image(filename_img)
+    show_moi(img*0.001, maskA*0.2, img*0.001)
 
     overlap = find_overlap(maskA, maskB)
+    show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
 
 
 if __name__ == "__main__":
