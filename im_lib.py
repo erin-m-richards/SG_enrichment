@@ -2,7 +2,6 @@ from typing import Tuple, Any
 
 import numpy
 from matplotlib import pyplot
-import cv2
 
 """
 This library includes functions for image manipulation.
@@ -12,6 +11,7 @@ This library includes functions for image manipulation.
 def show_moi(image, mask):
     """
     To show a mask overlaid on an image.
+    Mask is in peach, image is in green.
 
     Parameters
     ----------
@@ -25,8 +25,8 @@ def show_moi(image, mask):
     None, just shows an image
     """
 
-    overlay = cv2.addWeighted(image, 0.03, mask, 1.0, 0)
-    pyplot.imshow(overlay, cmap='gray')
+    overlay = numpy.dstack((mask*0.4, image*0.001, mask*0.001))
+    pyplot.imshow(overlay)
     pyplot.show()
 
     return None
@@ -169,10 +169,14 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 def main():
     filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
-    filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+    filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
+    #filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
     maskA = mask_cell(filename_maskA)
-    maskB = mask_cell(filename_maskB)
-    overlap = find_overlap(maskA, maskB)
+    img = read_image(filename_img)
+
+    show_moi(img, maskA)
+    #maskB = mask_cell(filename_maskB)
+    #overlap = find_overlap(maskA, maskB)
 
 if __name__ == "__main__":
     main()
