@@ -95,7 +95,25 @@ class FindOverlapTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    #def test_fo_C3onecell(self):
+    def test_fo_onecell(self):
+        filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
+        filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-onecell_seg.npy'
+        maskA = im_lib.mask_cell(filename_maskA)
+        exp = numpy.amax(maskA)
+        maskB = im_lib.mask_cell(filename_maskB)
+        overlap = im_lib.find_overlap(maskA, maskB)
+        res = numpy.amax(overlap)
+        self.assertEqual(res, exp)
+
+    def test_fo_twocells(self):
+        filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
+        filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+        maskA = im_lib.mask_cell(filename_maskA)
+        exp = numpy.amax(maskA)
+        maskB = im_lib.mask_cell(filename_maskB)
+        overlap = im_lib.find_overlap(maskA, maskB)
+        res = numpy.amax(overlap)
+        self.assertEqual(res, exp)
     
 
 class CountObjectsTest(unittest.TestCase):
