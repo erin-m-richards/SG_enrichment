@@ -195,7 +195,7 @@ def main():
     img = read_image(filename_img)
     show_moi(img*0.001, maskA*0.2, img*0.001)
 
-    overlap = find_overlap(maskA, maskB, 0.9)
+    overlap = find_overlap(maskA, maskB, 1.0)
     show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
 
 
