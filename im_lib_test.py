@@ -95,26 +95,35 @@ class FindOverlapTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    def test_fo_onecell(self):
+    def test_fo_oneCell(self):
         filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
         filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-onecell_seg.npy'
         maskA = im_lib.mask_cell(filename_maskA)
         exp = numpy.amax(maskA)
         maskB = im_lib.mask_cell(filename_maskB)
-        overlap = im_lib.find_overlap(maskA, maskB)
+        overlap = im_lib.find_overlap(maskA, maskB, 0.9)
         res = numpy.amax(overlap)
         self.assertEqual(res, exp)
 
-    def test_fo_twocells(self):
+    def test_fo_twoCells(self):
         filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
         filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
         maskA = im_lib.mask_cell(filename_maskA)
         exp = numpy.amax(maskA)
         maskB = im_lib.mask_cell(filename_maskB)
-        overlap = im_lib.find_overlap(maskA, maskB)
+        overlap = im_lib.find_overlap(maskA, maskB, 0.9)
         res = numpy.amax(overlap)
         self.assertEqual(res, exp)
-    
+
+    def test_fo_twoCells_highPercent(self):
+        filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
+        filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+        maskA = im_lib.mask_cell(filename_maskA)
+        exp = 0
+        maskB = im_lib.mask_cell(filename_maskB)
+        overlap = im_lib.find_overlap(maskA, maskB, 1.0)
+        res = numpy.amax(overlap)
+        self.assertEqual(res, exp)
 
 class CountObjectsTest(unittest.TestCase):
 
