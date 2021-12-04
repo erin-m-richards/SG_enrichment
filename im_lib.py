@@ -95,7 +95,7 @@ def read_image(filename):
     return img
 
 
-def find_overlap(chA_mask, chB_mask, overlap_percent):
+def find_overlap(chA_mask, chB_mask, overlap_threshold):
     """
     To find objects that occur in two channels and threshold for percent of
     overlap.
@@ -147,14 +147,19 @@ def find_overlap(chA_mask, chB_mask, overlap_percent):
 
         # Filter overlap masks for percent of overlap with maskA.
         maskA_area = len(maskA_xy)  # Find number of pixels in maskA.
-        print(f'Pixel area in maskA: ', maskA_area)
 
         overlap_index = numpy.where(overlap_mask == (mask + 1))  # Because indexing starts at 0.
         overlap_xy = list(zip(overlap_index[0], overlap_index[1]))
         # Makes a list of tuples with each tuple being an xy position.
         overlap_mask_size = len(overlap_xy)  # Find number of pixels in overlap_mask.
 
-        print(f'Pixel area in maskA: ', overlap_mask_size)
+        # Find percent of area overlap.
+        overlap_percent = overlap_mask_size / maskA_area
+
+        # If percent overlap is less than threshold, remove the mask.
+        if overlap_percent < overlap_threshold:
+            for xy in overlap_xy:
+                overlap_mask[xy[0], xy[1]] = 0
 
     return overlap_mask
 
@@ -190,7 +195,7 @@ def main():
     img = read_image(filename_img)
     show_moi(img*0.001, maskA*0.2, img*0.001)
 
-    overlap = find_overlap(maskA, maskB)
+    overlap = find_overlap(maskA, maskB, 0.9)
     show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
 
 
