@@ -2,7 +2,7 @@ from typing import Tuple, Any
 
 import numpy
 from matplotlib import pyplot
-from skimage.morphology import binary_dilation, disk
+from skimage.morphology import dilation, disk
 
 """
 This library includes functions for image manipulation.
@@ -137,17 +137,21 @@ def find_object(chB_img, chA_mask):
     chA_num_masks = int(numpy.amax(chA_mask))
 
     # Turn channelA mask into simple logical mask for dilation.
-    chA_log = numpy.where(chA_mask > 0, True, False)
+    #chA_log = numpy.where(chA_mask > 0, True, False)
 
     # Dilate masks in chA_mask.
     struct = disk(5)  # Make disk of radius = 5 pixels.
-    chA_dilated = binary_dilation(chA_log, selem=struct)
+    chA_dilated = dilation(chA_mask, selem=struct)
+
+    pyplot.imshow(chA_dilated)
+    pyplot.show()
+
     loc_bkgd_mask = chA_dilated
 
     # Make local background mask.
     for row in range(1, num_rows):
         for col in range(1, num_cols):
-            if chA_log[row, col]:
+            if chA_dilated[row, col] >= 1:
                 loc_bkgd_mask[row, col] = False
 
     #for mask in range(1, chA_num_masks):  # Start indexing at 1 for mask 1.
@@ -163,7 +167,7 @@ def find_object(chB_img, chA_mask):
             #if img[row, col] >= thresholds[1]:
                 #object_mask[row, col] = 1
 
-    return chA_log, chA_dilated
+    return loc_bkgd_mask, chA_dilated
 
 
 def find_overlap(chA_mask, chB_mask, overlap_threshold):
