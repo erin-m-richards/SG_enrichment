@@ -107,7 +107,7 @@ def read_image(filename):
 
 def find_object(img):
     """
-    To find bright objects using Otsu's Method within a size range in an image.
+    To find bright objects using Otsu's Method within an image.
 
     Parameters
     ----------
@@ -168,7 +168,7 @@ def find_overlap(chA_mask, chB_mask, overlap_threshold):
     chA_num_masks = int(numpy.amax(chA_mask))
 
     # Turn channelB mask into a simple logical mask.
-    chB_log = numpy.where(chB_mask > 0, 1, 0)
+    chB_log = numpy.where(chB_mask > 0, True, False)
 
     # Get matrix size of channelA mask.
     matrix_size = numpy.shape(chA_mask)
@@ -186,12 +186,12 @@ def find_overlap(chA_mask, chB_mask, overlap_threshold):
         for xy in maskA_xy:  # xy is a tuple.
 
             # If chB_mask is false at xy, make overlap_mask false at xy.
-            if chB_log[xy[0], xy[1]] == 0:
+            if chB_log[xy[0], xy[1]] == False:
                 overlap_mask[xy[0], xy[1]] = 0
 
             # If chB_mask is true at xy, make overlap_mask = int at xy.
             # Will work if chA_mask is false at this point, too.
-            if chB_log[xy[0], xy[1]] == 1:
+            if chB_log[xy[0], xy[1]] == True:
                 overlap_mask[xy[0], xy[1]] = chA_mask[xy[0], xy[1]]  # To keep masks separate.
 
         # Filter overlap masks for percent of overlap with maskA.
@@ -234,21 +234,21 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
-    #filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
-    #filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+    filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
+    filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
     #filename_imgA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
-    filename_imgB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
+    #filename_imgB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
 
-    #maskA = mask_cell(filename_maskA)
-    #maskB = mask_cell(filename_maskB)
+    maskA = mask_cell(filename_maskA)
+    maskB = mask_cell(filename_maskB)
 
-    img = read_image(filename_imgB)
+    #img = read_image(filename_imgB)
     #show_moi(img*0.001, maskA*0.2, img*0.001)
 
-    #overlap = find_overlap(maskA, maskB, 1.0)
-    #show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
+    overlap = find_overlap(maskA, maskB, 0.9)
+    show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
 
-    granule_mask = find_object(img)
+    #granule_mask = find_object(img)
     #show_moi(img*0.001, granule_mask*0.2, img*0.001)
 
 
