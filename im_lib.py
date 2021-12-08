@@ -105,61 +105,49 @@ def read_image(filename):
     return img
 
 
-def find_object(chB_img, chA_mask):
+def mask_loc_bkgd(mask):
     """
-    To find objects in channelB image using channelA mask.
-    chA_mask will be used to make a local background mask loc_bkgd_mask.
-    Pixel intensity in chB_img inside chA_mask will be compared to pixel
-    intensity in the loc_bkgd_mask for this image.
-    For each mask in chA_mask, if intensity is significantly higher than
-    intensity in loc_bkgd_mask, a mask in chB_mask will be created.
+    To create a mask, loc_bkgd_mask, surrounding the given mask.
+    This can be used to get values from the local background.
 
     Parameters
     ----------
-    chB_img = NumPy array of a channelB
-
-    chA_mask = NumPy array of channelA where int = object, 0 = background
+    mask = NumPy array where int = object, 0 = background
 
     Returns
     -------
-    object_mask = NumPy array where 1 = object, 0 = background
+    loc_bkgd_mask = NumPy array where 1 = object, 0 = background
     """
 
-    # Find size of channelB image.
-    img_size = numpy.shape(chB_img)
-    num_rows = int(img_size[0])
-    num_cols = int(img_size[1])
-
-    # Make dummy matrix for channelB object mask.
-    chB_mask = numpy.zeros(img_size)
+    # Find size of mask.
+    matrix_size = numpy.shape(mask)
+    num_rows = int(matrix_size[0])
+    num_cols = int(matrix_size[1])
 
     # Make dummy matrix for local background mask.
-    loc_bkgd_mask = numpy.zeros(img_size)
+    loc_bkgd_mask = numpy.zeros(matrix_size)
 
     # Count number of masks in channelA.
-    chA_num_masks = int(numpy.amax(chA_mask))
-
-    # Turn channelA mask into simple logical mask for dilation.
-    #chA_log = numpy.where(chA_mask > 0, True, False)
+    num_masks = int(numpy.amax(mask))
 
     # Dilate masks in chA_mask. Keep mask indexing.
     struct = disk(5)  # Make disk of radius = 5 pixels.
-    chA_dilated = dilation(chA_mask, selem=struct)
+    dilated_mask = dilation(mask, selem=struct)
 
     # Make local background mask.
     for row in range(1, num_rows):
         for col in range(1, num_cols):
             # Make loc_bkgd_mask = 0 where chA_mask is true.
-            if chA_mask[row, col] >= 1:
+            if mask[row, col] >= 1:
                 loc_bkgd_mask[row, col] = 0
             # Make loc_bkgd_mask = chA_dilated int where chA_mask is false.
-            if chA_mask[row, col] == 0:
-                loc_bkgd_mask[row, col] = chA_dilated[row, col]
+            if mask[row, col] == 0:
+                loc_bkgd_mask[row, col] = dilated_mask[row, col]
 
     pyplot.imshow(loc_bkgd_mask)
     pyplot.show()
 
-    return loc_bkgd_mask, chA_dilated
+    return loc_bkgd_mask
 
 
 def find_overlap(chA_mask, chB_mask, overlap_threshold):
@@ -268,8 +256,7 @@ def main():
     #overlap = find_overlap(maskA, maskB, 0.9)
     #show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
 
-    log, dilated = find_object(img, maskC)
-    show_moi(log*0.9, log*0.001, dilated*0.9)
+    bkgd = mask_loc_bkgd(maskC)
     #show_moi(img*0.001, granule_mask*0.2, img*0.001)
 
 
