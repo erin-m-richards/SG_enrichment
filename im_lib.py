@@ -50,7 +50,7 @@ def mask_cell(filename):
     image = NumPy array of the image
     """
 
-    # Segmenting C2 based on 6xA_004, 005, 006, 008:
+    # Segmenting C2 for cells based on 6xA_004, 005, 006, 008:
     # radius = 250 pixels
     # model = cyto2
     # Note: Segments cells from background and from each other well.
@@ -61,11 +61,20 @@ def mask_cell(filename):
     # model = cyto
     # Note: Segments cells from background but not from each other.
 
-    # From command line for C2:
+    # Segmenting C1 for granules based on 6xA_004, 005, 006, 008:
+    # radius = 15 pixels
+    # model = cyto
+    # Note: Segments most granules from the background.
+    # USE THIS CHANNEL TO DEFINE GRANULE OUTLINES.
+
+    # From command line for C2 for cells:
     # python -m cellpose --dir ~/images/ --pretrained_model cyto2 --diameter 250
 
-    # From command line for C3:
+    # From command line for C3 for cells:
     # python -m cellpose --dir ~/images/ --pretrained_model cyto --diameter 300
+
+    # From command line for C1 for granules:
+    # python -m cellpose --dir ~/images/ --pretrained_model cyto --diameter 15
 
     # Load whole file.
     data = numpy.load(filename, allow_pickle=True).item()
