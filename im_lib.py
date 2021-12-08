@@ -146,9 +146,6 @@ def mask_loc_bkgd(mask, radius=5):
             if mask[row, col] == 0:
                 loc_bkgd_mask[row, col] = dilated_mask[row, col]
 
-    pyplot.imshow(loc_bkgd_mask)
-    pyplot.show()
-
     return loc_bkgd_mask
 
 
