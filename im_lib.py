@@ -2,7 +2,7 @@ from typing import Tuple, Any
 
 import numpy
 from matplotlib import pyplot
-from skimage.filters import threshold_multiotsu
+from skimage.morphology import binary_dilation, disk
 
 """
 This library includes functions for image manipulation.
@@ -105,43 +105,68 @@ def read_image(filename):
     return img
 
 
-def find_object(img):
+def find_object(chB_img, chA_mask):
     """
-    To find bright objects using Otsu's Method within an image.
+    To find objects in channelB image using channelA mask.
+    chA_mask will be used to make a local background mask loc_bkgd_mask.
+    Pixel intensity in chB_img inside chA_mask will be compared to pixel
+    intensity in the loc_bkgd_mask for this image.
+    For each mask in chA_mask, if intensity is significantly higher than
+    intensity in loc_bkgd_mask, a mask in chB_mask will be created.
 
     Parameters
     ----------
-    img = NumPy array of a one-channel image
+    chB_img = NumPy array of a channelB
 
-    size_range = array of two integers formatted as [lower_limit, upper_limit]
+    chA_mask = NumPy array of channelA where int = object, 0 = background
 
     Returns
     -------
     object_mask = NumPy array where 1 = object, 0 = background
     """
 
-    # Use Otsu's Method to find pixel intensity to binarize the image.
-    thresholds = numpy.uint16(threshold_multiotsu(img))
-
-    # Find size of image.
-    img_size = numpy.shape(img)
+    # Find size of channelB image.
+    img_size = numpy.shape(chB_img)
     num_rows = int(img_size[0])
     num_cols = int(img_size[1])
 
-    # Make dummy mask for objects.
-    object_mask = numpy.zeros(img_size)
+    # Make dummy matrix for channelB object mask.
+    chB_mask = numpy.zeros(img_size)
+
+    # Count number of masks in channelA.
+    chA_num_masks = int(numpy.amax(chA_mask))
+
+    # Turn channelA mask into simple logical mask for dilation.
+    chA_log = numpy.where(chA_mask > 0, True, False)
+
+    # Dilate masks in chA_mask.
+    struct = disk(3)  # Make disk of radius 3.
+    chA_dilated = binary_dilation(chA_log, selem=struct)
+    loc_bkgd_mask = chA_dilated
+
+    # Make local background mask.
+    for row in range(1, num_rows):
+        for col in range(1, num_cols):
+            if chA_log[row, col]:
+                loc_bkgd_mask[row, col] == False
+
+    pyplot.imshow(loc_bkgd_mask)
+    pyplot.show()
+
+    #for mask in range(1, chA_num_masks):  # Start indexing at 1 for mask 1.
+        # Find index/position of masked pixels in channelA.
+        #maskA_index = numpy.where(chA_mask == mask)
+        #maskA_xy = list(zip(maskA_index[0], maskA_index[1]))
+        # Makes a list of tuples with each tuple being an xy position.
 
     # Make object_mask true where image pixel is greater than or equal to
     # threshold intensity.
-    for row in range(1, num_rows):
-        for col in range(1, num_cols):
-            if img[row, col] >= thresholds[1]:
-                object_mask[row, col] = 1
+    #for row in range(1, num_rows):
+        #for col in range(1, num_cols):
+            #if img[row, col] >= thresholds[1]:
+                #object_mask[row, col] = 1
 
-    pyplot.imshow(object_mask)
-    pyplot.show()
-
-    return object_mask
+    return chA_dilated
 
 
 def find_overlap(chA_mask, chB_mask, overlap_threshold):
@@ -234,21 +259,23 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
-    filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
-    filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+    #filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
+    #filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+    filename_maskC = '/Users/Erin/PyCharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
     #filename_imgA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
-    #filename_imgB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
+    filename_imgB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
 
-    maskA = mask_cell(filename_maskA)
-    maskB = mask_cell(filename_maskB)
+    #maskA = mask_cell(filename_maskA)
+    #maskB = mask_cell(filename_maskB)
+    maskC = mask_cell(filename_maskC)
 
-    #img = read_image(filename_imgB)
+    img = read_image(filename_imgB)
     #show_moi(img*0.001, maskA*0.2, img*0.001)
 
-    overlap = find_overlap(maskA, maskB, 0.9)
-    show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
+    #overlap = find_overlap(maskA, maskB, 0.9)
+    #show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
 
-    #granule_mask = find_object(img)
+    granule_mask = find_object(img, maskC)
     #show_moi(img*0.001, granule_mask*0.2, img*0.001)
 
 
