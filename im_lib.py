@@ -2,6 +2,7 @@ from typing import Tuple, Any
 
 import numpy
 from matplotlib import pyplot
+from skimage.filters import threshold_multiotsu
 
 """
 This library includes functions for image manipulation.
@@ -119,61 +120,26 @@ def find_object(img):
     object_mask = NumPy array where 1 = object, 0 = background
     """
 
-    # Find number of pixels in image.
+    # Use Otsu's Method to find pixel intensity to binarize the image.
+    thresholds = numpy.uint16(threshold_multiotsu(img))
+
+    # Find size of image.
     img_size = numpy.shape(img)
-    num_rows = img_size[0]
-    num_cols = img_size[1]
-    num_pixels = num_rows * num_cols
+    num_rows = int(img_size[0])
+    num_cols = int(img_size[1])
 
-    # Find max pixel value in image.
-    pixel_max = numpy.amax(img)
-
-    # Find min pixel value in image.
-    pixel_min = numpy.amin(img)
-
-    # Find weight of each pixel for later stats in Otsu's Method.
-    mean_pix_weight = 1.0 / num_pixels
-
-    # Generate histogram of pixel values in image.
-    counts, bins = numpy.histogram(img, numpy.arange(pixel_min,
-                                (pixel_max + 2))) # To include max val in bin.
-
-    # Set initial values for Otsu's Method.
-    threshold = -1
-    final_variance = -1
-    possible_vals = numpy.arange(pixel_min, (pixel_max + 1))
-
-    # Apply Otsu's Method to get threshold pixel value.
-    for bin in bins[1:-1]: # Iterate all bins except for first and last.
-        sum_vals_before_inc = numpy.sum(counts[:bin])
-        sum_vals_after = numpy.sum(counts[bin:])
-        probability_before_inc = sum_vals_before_inc * mean_pix_weight
-        probability_after = sum_vals_after * mean_pix_weight
-        mean_before_inc = (numpy.sum(possible_vals[:bin] * counts[:bin]) /
-                                  sum_vals_before_inc)
-        mean_after = (numpy.sum(possible_vals[bin:] * counts[bin:]) /
-                             sum_vals_after)
-
-        variance = (probability_before_inc * probability_after *
-                    ((mean_before_inc - mean_after) ** 2))
-
-        if variance >= final_variance:
-            threshold = numpy.uint16(bin)
-            final_variance = variance
-
-    # Make dummy matrix for object_mask.
+    # Make dummy mask for objects.
     object_mask = numpy.zeros(img_size)
 
-    #object_mask = numpy.where(img > threshold, 1, 0)
+    # Make object_mask true where image pixel is greater than or equal to
+    # threshold intensity.
+    for row in range(1, num_rows):
+        for col in range(1, num_cols):
+            if img[row, col] >= thresholds[1]:
+                object_mask[row, col] = 1
 
-    # Make mask of objects with pixel value greater than/equal to threshold.
-   # for row in range(1, num_rows):
-        #for col in range(1, num_cols):
-            #print(type(img[row, col]))
-            #if img[row, col] >= threshold:
-                #object_mask[row, col] == 1
-            #if img[row, col] < threshold:
-                #object_mask[row, col] == 0
+    pyplot.imshow(object_mask)
+    pyplot.show()
 
     return object_mask
 
