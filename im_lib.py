@@ -104,6 +104,80 @@ def read_image(filename):
     return img
 
 
+def find_object(img):
+    """
+    To find bright objects using Otsu's Method within a size range in an image.
+
+    Parameters
+    ----------
+    img = NumPy array of a one-channel image
+
+    size_range = array of two integers formatted as [lower_limit, upper_limit]
+
+    Returns
+    -------
+    object_mask = NumPy array where 1 = object, 0 = background
+    """
+
+    # Find number of pixels in image.
+    img_size = numpy.shape(img)
+    num_rows = img_size[0]
+    num_cols = img_size[1]
+    num_pixels = num_rows * num_cols
+
+    # Find max pixel value in image.
+    pixel_max = numpy.amax(img)
+
+    # Find min pixel value in image.
+    pixel_min = numpy.amin(img)
+
+    # Find weight of each pixel for later stats in Otsu's Method.
+    mean_pix_weight = 1.0 / num_pixels
+
+    # Generate histogram of pixel values in image.
+    counts, bins = numpy.histogram(img, numpy.arange(pixel_min,
+                                (pixel_max + 2))) # To include max val in bin.
+
+    # Set initial values for Otsu's Method.
+    threshold = -1
+    final_variance = -1
+    possible_vals = numpy.arange(pixel_min, (pixel_max + 1))
+
+    # Apply Otsu's Method to get threshold pixel value.
+    for bin in bins[1:-1]: # Iterate all bins except for first and last.
+        sum_vals_before_inc = numpy.sum(counts[:bin])
+        sum_vals_after = numpy.sum(counts[bin:])
+        probability_before_inc = sum_vals_before_inc * mean_pix_weight
+        probability_after = sum_vals_after * mean_pix_weight
+        mean_before_inc = (numpy.sum(possible_vals[:bin] * counts[:bin]) /
+                                  sum_vals_before_inc)
+        mean_after = (numpy.sum(possible_vals[bin:] * counts[bin:]) /
+                             sum_vals_after)
+
+        variance = (probability_before_inc * probability_after *
+                    ((mean_before_inc - mean_after) ** 2))
+
+        if variance >= final_variance:
+            threshold = numpy.uint16(bin)
+            final_variance = variance
+
+    # Make dummy matrix for object_mask.
+    object_mask = numpy.zeros(img_size)
+
+    #object_mask = numpy.where(img > threshold, 1, 0)
+
+    # Make mask of objects with pixel value greater than/equal to threshold.
+   # for row in range(1, num_rows):
+        #for col in range(1, num_cols):
+            #print(type(img[row, col]))
+            #if img[row, col] >= threshold:
+                #object_mask[row, col] == 1
+            #if img[row, col] < threshold:
+                #object_mask[row, col] == 0
+
+    return object_mask
+
+
 def find_overlap(chA_mask, chB_mask, overlap_threshold):
     """
     To find objects that occur in two channels and threshold for percent of
@@ -194,18 +268,22 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
-    filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
-    filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
-    filename_img = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
+    #filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
+    #filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+    #filename_imgA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
+    filename_imgB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
 
-    maskA = mask_cell(filename_maskA)
-    maskB = mask_cell(filename_maskB)
+    #maskA = mask_cell(filename_maskA)
+    #maskB = mask_cell(filename_maskB)
 
-    img = read_image(filename_img)
-    show_moi(img*0.001, maskA*0.2, img*0.001)
+    img = read_image(filename_imgB)
+    #show_moi(img*0.001, maskA*0.2, img*0.001)
 
-    overlap = find_overlap(maskA, maskB, 1.0)
-    show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
+    #overlap = find_overlap(maskA, maskB, 1.0)
+    #show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
+
+    granule_mask = find_object(img)
+    #show_moi(img*0.001, granule_mask*0.2, img*0.001)
 
 
 if __name__ == "__main__":
