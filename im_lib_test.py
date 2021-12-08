@@ -79,6 +79,55 @@ class ReadImageTest(unittest.TestCase):
         self.assertEqual(res, exp)
 
 
+class MaskLocalBackground(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(clc):
+        print("\nRunning MaskLocalBackground class setUp...")
+
+    @classmethod
+    def tearDownClass(clc):
+        print("\nRunning MaskLocalBackground class tearDown...")
+
+    def setUp(self):
+        print("\nRunning setUp...")
+
+    def tearDown(self):
+        print("\nRunning tearDown...")
+
+    def test_mlb_oneCell(self):
+        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
+        mask = im_lib.mask_cell(filename)
+        exp = numpy.amax(mask)
+        loc_mask = im_lib.mask_loc_bkgd(mask, radius=5)
+        res = numpy.amax(loc_mask)
+        self.assertEqual(res, exp)
+
+    def test_mlb_noRadiusGiven(self):
+        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
+        mask = im_lib.mask_cell(filename)
+        exp = numpy.amax(mask)
+        loc_mask = im_lib.mask_loc_bkgd(mask)
+        res = numpy.amax(loc_mask)
+        self.assertEqual(res, exp)
+
+    def test_mlb_diffRadiusGiven(self):
+        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
+        mask = im_lib.mask_cell(filename)
+        exp = numpy.amax(mask)
+        loc_mask = im_lib.mask_loc_bkgd(mask, radius=3)
+        res = numpy.amax(loc_mask)
+        self.assertEqual(res, exp)
+
+    def test_mlb_twoCells(self):
+        filename = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-twocells_seg.npy'
+        mask = im_lib.mask_cell(filename)
+        exp = numpy.amax(mask)
+        loc_mask = im_lib.mask_loc_bkgd(mask, radius=5)
+        res = numpy.amax(loc_mask)
+        self.assertEqual(res, exp)
+
+
 class FindOverlapTest(unittest.TestCase):
 
     @classmethod
