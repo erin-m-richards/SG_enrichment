@@ -105,7 +105,7 @@ def read_image(filename):
     return img
 
 
-def mask_loc_bkgd(mask):
+def mask_loc_bkgd(mask, radius=5):
     """
     To create a mask, loc_bkgd_mask, surrounding the given mask.
     This can be used to get values from the local background.
@@ -113,6 +113,8 @@ def mask_loc_bkgd(mask):
     Parameters
     ----------
     mask = NumPy array where int = object, 0 = background
+
+    radius = int for pixel radius to create loc_bkgd_mask
 
     Returns
     -------
@@ -131,7 +133,7 @@ def mask_loc_bkgd(mask):
     num_masks = int(numpy.amax(mask))
 
     # Dilate masks in chA_mask. Keep mask indexing.
-    struct = disk(5)  # Make disk of radius = 5 pixels.
+    struct = disk(radius)  # Make disk of given radius in pixels.
     dilated_mask = dilation(mask, selem=struct)
 
     # Make local background mask.
@@ -256,8 +258,7 @@ def main():
     #overlap = find_overlap(maskA, maskB, 0.9)
     #show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
 
-    bkgd = mask_loc_bkgd(maskC)
-    #show_moi(img*0.001, granule_mask*0.2, img*0.001)
+    bkgd = mask_loc_bkgd(maskC, 5)
 
 
 if __name__ == "__main__":
