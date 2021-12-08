@@ -133,39 +133,31 @@ def find_object(chB_img, chA_mask):
     # Make dummy matrix for channelB object mask.
     chB_mask = numpy.zeros(img_size)
 
+    # Make dummy matrix for local background mask.
+    loc_bkgd_mask = numpy.zeros(img_size)
+
     # Count number of masks in channelA.
     chA_num_masks = int(numpy.amax(chA_mask))
 
     # Turn channelA mask into simple logical mask for dilation.
     #chA_log = numpy.where(chA_mask > 0, True, False)
 
-    # Dilate masks in chA_mask.
+    # Dilate masks in chA_mask. Keep mask indexing.
     struct = disk(5)  # Make disk of radius = 5 pixels.
     chA_dilated = dilation(chA_mask, selem=struct)
-
-    pyplot.imshow(chA_dilated)
-    pyplot.show()
-
-    loc_bkgd_mask = chA_dilated
 
     # Make local background mask.
     for row in range(1, num_rows):
         for col in range(1, num_cols):
-            if chA_dilated[row, col] >= 1:
-                loc_bkgd_mask[row, col] = False
+            # Make loc_bkgd_mask = 0 where chA_mask is true.
+            if chA_mask[row, col] >= 1:
+                loc_bkgd_mask[row, col] = 0
+            # Make loc_bkgd_mask = chA_dilated int where chA_mask is false.
+            if chA_mask[row, col] == 0:
+                loc_bkgd_mask[row, col] = chA_dilated[row, col]
 
-    #for mask in range(1, chA_num_masks):  # Start indexing at 1 for mask 1.
-        # Find index/position of masked pixels in channelA.
-        #maskA_index = numpy.where(chA_mask == mask)
-        #maskA_xy = list(zip(maskA_index[0], maskA_index[1]))
-        # Makes a list of tuples with each tuple being an xy position.
-
-    # Make object_mask true where image pixel is greater than or equal to
-    # threshold intensity.
-    #for row in range(1, num_rows):
-        #for col in range(1, num_cols):
-            #if img[row, col] >= thresholds[1]:
-                #object_mask[row, col] = 1
+    pyplot.imshow(loc_bkgd_mask)
+    pyplot.show()
 
     return loc_bkgd_mask, chA_dilated
 
