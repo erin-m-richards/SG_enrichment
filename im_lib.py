@@ -140,7 +140,7 @@ def find_object(chB_img, chA_mask):
     chA_log = numpy.where(chA_mask > 0, True, False)
 
     # Dilate masks in chA_mask.
-    struct = disk(3)  # Make disk of radius 3.
+    struct = disk(5)  # Make disk of radius = 5 pixels.
     chA_dilated = binary_dilation(chA_log, selem=struct)
     loc_bkgd_mask = chA_dilated
 
@@ -148,10 +148,7 @@ def find_object(chB_img, chA_mask):
     for row in range(1, num_rows):
         for col in range(1, num_cols):
             if chA_log[row, col]:
-                loc_bkgd_mask[row, col] == False
-
-    pyplot.imshow(loc_bkgd_mask)
-    pyplot.show()
+                loc_bkgd_mask[row, col] = False
 
     #for mask in range(1, chA_num_masks):  # Start indexing at 1 for mask 1.
         # Find index/position of masked pixels in channelA.
@@ -166,7 +163,7 @@ def find_object(chB_img, chA_mask):
             #if img[row, col] >= thresholds[1]:
                 #object_mask[row, col] = 1
 
-    return chA_dilated
+    return chA_log, chA_dilated
 
 
 def find_overlap(chA_mask, chB_mask, overlap_threshold):
@@ -275,7 +272,8 @@ def main():
     #overlap = find_overlap(maskA, maskB, 0.9)
     #show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
 
-    granule_mask = find_object(img, maskC)
+    log, dilated = find_object(img, maskC)
+    show_moi(log*0.9, log*0.001, dilated*0.9)
     #show_moi(img*0.001, granule_mask*0.2, img*0.001)
 
 
