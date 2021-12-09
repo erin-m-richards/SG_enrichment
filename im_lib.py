@@ -1,8 +1,8 @@
 from typing import Tuple, Any
-
 import numpy
 from matplotlib import pyplot
 from skimage.morphology import dilation, disk
+from statistics import median, mean, variance
 
 """
 This library includes functions for image manipulation.
@@ -147,6 +147,90 @@ def mask_loc_bkgd(mask, radius=5):
                 loc_bkgd_mask[row, col] = dilated_mask[row, col]
 
     return loc_bkgd_mask
+
+
+def find_object(img, exp_mask, loc_bkgd_mask):
+    """
+    To find objects in an image, img, by comparing the local background mask,
+    loc_bkgd_mask, and the expected mask, exp_mask.
+    If the pixel intensity in img under exp_mask is significantly higher than
+    the pixel intensity in the img under loc_bkgd_mask by one-tailed
+    two-sample t-test, then the exp_mask is made true for the resulting mask,
+    res_mask.
+
+    Parameters
+    ----------
+    img = NumPy array of a one-channel image
+
+    exp_mask = NumPy array where int = expected objects, 0 = background
+
+    loc_bkgd_mask = NumPy array where int = local background of expected
+    objects, 0 = background
+
+    Returns
+    -------
+    res_mask = NumPy array where int = resulting objects, 0 = background
+
+    object_median = int of the median value found in img under res_mask
+
+    bkgd_median = int of the median value found in img under local_bkgd_mask
+    """
+
+    # Find size of image.
+    matrix_size = numpy.shape(img)
+    num_rows = int(matrix_size[0])
+    num_cols = int(matrix_size[1])
+
+    # Count number of masks in exp_mask.
+    num_masks = int(numpy.amax(exp_mask))
+
+    for mask in range(1, num_masks):
+        # Make dummy list for intensity values in image.
+        exp_vals = list()
+
+        # Find index/position of masked pixels in exp_mask.
+        exp_index = numpy.where(exp_mask == mask)
+        exp_xy = list(zip(exp_index[0], exp_index[1]))
+        # Makes a list of tuples with each tuple being an xy position.
+
+        # For each xy position in pull the pixel value from img.
+        for exy in exp_xy:  # xy is a tuple.
+            exp_vals.append(img[exy[0], exy[1]])
+
+        # Make dummy list for intensity values in image.
+        bkgd_vals = list()
+
+        # Find index/position of masked pixels in loc_bkgd_mask.
+        bkgd_index = numpy.where(loc_bkgd_mask == mask)
+        bkgd_xy = list(zip(bkgd_index[0], bkgd_index[1]))
+        # Makes a list of tuples with each tuple being an xy position.
+
+        # For each xy position in pull the pixel value from img.
+        for bxy in bkgd_xy:  # xy is a tuple.
+            bkgd_vals.append(img[bxy[0], bxy[1]])
+
+        # See if exp_vals is significantly higher than bkgd_vals by one-tailed
+        # two-sample t-test.
+        exp_mean = mean(exp_vals)
+        exp_size = len(exp_vals)
+        exp_variance = variance(exp_vals)
+        bkgd_mean = mean(bkgd_vals)
+        bkgd_size = len(bkgd_vals)
+        bkgd_variance = variance(exp_vals)
+
+        pooled_variance = (((exp_size - 1) * exp_variance +
+                           (bkgd_size - 1) * bkgd_variance) /
+                           (exp_size + bkgd_size - 2))
+
+        numerator = exp_mean - bkgd_mean
+        denominator = (((1/exp_size) + (1/bkgd_size)) *
+                       pooled_variance) ** (1/2)
+        t = numerator / denominator
+
+
+
+
+    return res_mask, object_median, bkgd_median
 
 
 def find_overlap(chA_mask, chB_mask, overlap_threshold):
