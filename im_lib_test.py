@@ -128,6 +128,45 @@ class MaskLocalBackground(unittest.TestCase):
         self.assertEqual(res, exp)
 
 
+class FindObject(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(clc):
+        print("\nRunning FindObject class setUp...")
+
+    @classmethod
+    def tearDownClass(clc):
+        print("\nRunning FindObject class tearDown...")
+
+    def setUp(self):
+        print("\nRunning setUp...")
+
+    def tearDown(self):
+        print("\nRunning tearDown...")
+
+    def test_fo_oneCell(self):
+        filename_mask_C1 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
+        filename_img_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
+        mask_C1 = im_lib.mask_cell(filename_mask_C1)
+        max = int(numpy.amax(mask_C1))
+        img_C2 = im_lib.read_image(filename_img_C2)
+        mask_bkgd = im_lib.mask_loc_bkgd(mask_C1, radius=5)
+        mask_C2, medians = im_lib.find_object(img_C2, mask_C1, mask_bkgd)
+        res = int(numpy.amax(mask_C2))
+        self.assertFalse(res > max)
+
+    def test_fo_twoCells(self):
+        filename_mask_C1 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-twocells_seg.npy'
+        filename_img_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
+        mask_C1 = im_lib.mask_cell(filename_mask_C1)
+        max = int(numpy.amax(mask_C1))
+        img_C2 = im_lib.read_image(filename_img_C2)
+        mask_bkgd = im_lib.mask_loc_bkgd(mask_C1, radius=5)
+        mask_C2, medians = im_lib.find_object(img_C2, mask_C1, mask_bkgd)
+        res = int(numpy.amax(mask_C2))
+        self.assertFalse(res > max)
+
+
 class FindOverlapTest(unittest.TestCase):
 
     @classmethod
