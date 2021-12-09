@@ -262,9 +262,9 @@ def find_overlap(chA_mask, chB_mask, overlap_threshold):
     # Make a dummy overlap mask the same size as channelA mask.
     overlap_mask = numpy.zeros(matrix_size)
 
-    for mask in range(chA_num_masks):
+    for mask in range(1, (chA_num_masks + 1)):  # Masks start at 1.
         # Find index/position of masked pixels in channelA.
-        maskA_index = numpy.where(chA_mask == (mask + 1))  # Because indexing starts at 0.
+        maskA_index = numpy.where(chA_mask == mask)
         maskA_xy = list(zip(maskA_index[0], maskA_index[1]))
         # Makes a list of tuples with each tuple being an xy position.
 
@@ -283,7 +283,7 @@ def find_overlap(chA_mask, chB_mask, overlap_threshold):
         # Filter overlap masks for percent of overlap with maskA.
         maskA_area = len(maskA_xy)  # Find number of pixels in maskA.
 
-        overlap_index = numpy.where(overlap_mask == (mask + 1))  # Because indexing starts at 0.
+        overlap_index = numpy.where(overlap_mask == mask)
         overlap_xy = list(zip(overlap_index[0], overlap_index[1]))
         # Makes a list of tuples with each tuple being an xy position.
         overlap_mask_size = len(overlap_xy)  # Find number of pixels in overlap_mask.
@@ -320,25 +320,25 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
-    #filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
-    #filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
-    filename_mask_C1 = '/Users/Erin/PyCharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
+    filename_mask_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
+    filename_mask_C3 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+    #filename_mask_C1 = '/Users/Erin/PyCharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
     #filename_imgA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
-    filename_img_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
+    #filename_img_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
 
-    #maskA = mask_cell(filename_maskA)
-    #maskB = mask_cell(filename_maskB)
-    mask_C1 = mask_cell(filename_mask_C1)
+    mask_C2 = mask_cell(filename_mask_C2)
+    mask_C3 = mask_cell(filename_mask_C3)
+    #mask_C1 = mask_cell(filename_mask_C1)
 
-    img_C2 = read_image(filename_img_C2)
+    #img_C2 = read_image(filename_img_C2)
     #show_moi(img*0.001, maskA*0.2, img*0.001)
 
-    #overlap = find_overlap(maskA, maskB, 0.9)
-    #show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
+    overlap = find_overlap(mask_C2, mask_C3, 0.9)
+    show_moi(mask_C2*0.5, overlap*0.5, mask_C3*0.1)
 
-    bkgd = mask_loc_bkgd(mask_C1, 5)
-    mask_C2, medians = find_object(img_C2, mask_C1, bkgd)
-    show_moi(img_C2*0.001, mask_C2*0.1, img_C2*0.001)
+    #bkgd = mask_loc_bkgd(mask_C1, 5)
+    #mask_C2, medians = find_object(img_C2, mask_C1, bkgd)
+    #show_moi(img_C2*0.001, mask_C2*0.1, img_C2*0.001)
 
 if __name__ == "__main__":
     main()
