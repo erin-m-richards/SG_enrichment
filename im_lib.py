@@ -189,7 +189,7 @@ def find_object(img, exp_mask, loc_bkgd_mask):
     # Count number of masks in exp_mask.
     num_exp_masks = int(numpy.amax(exp_mask))
 
-    for mask in range(1, num_exp_masks):
+    for mask in range(1, (num_exp_masks + 1)):
         # Make dummy list for intensity values in image.
         exp_vals = list()
 
