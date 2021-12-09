@@ -144,7 +144,7 @@ class FindObject(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
 
-    def test_fo_oneCell(self):
+    def test_fob_oneCell(self):
         filename_mask_C1 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
         filename_img_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
         mask_C1 = im_lib.mask_cell(filename_mask_C1)
@@ -155,7 +155,7 @@ class FindObject(unittest.TestCase):
         res = int(numpy.amax(mask_C2))
         self.assertFalse(res > max)
 
-    def test_fo_twoCells(self):
+    def test_fob_twoCells(self):
         filename_mask_C1 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-twocells_seg.npy'
         filename_img_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
         mask_C1 = im_lib.mask_cell(filename_mask_C1)
@@ -183,7 +183,7 @@ class FindOverlapTest(unittest.TestCase):
     def tearDown(self):
         print("\nRunning tearDown...")
         
-    def test_fo_oneCell(self):
+    def test_fov_oneCell(self):
         filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
         filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-onecell_seg.npy'
         maskA = im_lib.mask_cell(filename_maskA)
@@ -193,7 +193,7 @@ class FindOverlapTest(unittest.TestCase):
         res = numpy.amax(overlap)
         self.assertEqual(res, exp)
 
-    def test_fo_twoCells(self):
+    def test_fov_twoCells(self):
         filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
         filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
         maskA = im_lib.mask_cell(filename_maskA)
@@ -203,7 +203,7 @@ class FindOverlapTest(unittest.TestCase):
         res = numpy.amax(overlap)
         self.assertEqual(res, exp)
 
-    def test_fo_twoCells_highPercent(self):
+    def test_fov_twoCells_highPercent(self):
         filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
         filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
         maskA = im_lib.mask_cell(filename_maskA)
