@@ -2,7 +2,8 @@ from typing import Tuple, Any
 import numpy
 from matplotlib import pyplot
 from skimage.morphology import dilation, disk
-from statistics import median, mean, variance
+from statistics import median
+from scipy.stats import ttest_ind
 
 """
 This library includes functions for image manipulation.
@@ -178,13 +179,17 @@ def find_object(img, exp_mask, loc_bkgd_mask):
 
     # Find size of image.
     matrix_size = numpy.shape(img)
-    num_rows = int(matrix_size[0])
-    num_cols = int(matrix_size[1])
+
+    # Make dummy matrix for res_mask.
+    res_mask = numpy.zeros(matrix_size)
+
+    # Make dummy list for median values.
+    medians = list()
 
     # Count number of masks in exp_mask.
-    num_masks = int(numpy.amax(exp_mask))
+    num_exp_masks = int(numpy.amax(exp_mask))
 
-    for mask in range(1, num_masks):
+    for mask in range(1, num_exp_masks):
         # Make dummy list for intensity values in image.
         exp_vals = list()
 
@@ -195,7 +200,7 @@ def find_object(img, exp_mask, loc_bkgd_mask):
 
         # For each xy position in pull the pixel value from img.
         for exy in exp_xy:  # xy is a tuple.
-            exp_vals.append(img[exy[0], exy[1]])
+            exp_vals.append(int(img[exy[0], exy[1]]))
 
         # Make dummy list for intensity values in image.
         bkgd_vals = list()
@@ -207,30 +212,22 @@ def find_object(img, exp_mask, loc_bkgd_mask):
 
         # For each xy position in pull the pixel value from img.
         for bxy in bkgd_xy:  # xy is a tuple.
-            bkgd_vals.append(img[bxy[0], bxy[1]])
+            bkgd_vals.append(int(img[bxy[0], bxy[1]]))
 
         # See if exp_vals is significantly higher than bkgd_vals by one-tailed
         # two-sample t-test.
-        exp_mean = mean(exp_vals)
-        exp_size = len(exp_vals)
-        exp_variance = variance(exp_vals)
-        bkgd_mean = mean(bkgd_vals)
-        bkgd_size = len(bkgd_vals)
-        bkgd_variance = variance(exp_vals)
+        (t, p) = ttest_ind(a=exp_vals, b=bkgd_vals, equal_var=True)
 
-        pooled_variance = (((exp_size - 1) * exp_variance +
-                           (bkgd_size - 1) * bkgd_variance) /
-                           (exp_size + bkgd_size - 2))
+        # If it is significant...
+        if p < 0.05:
+            # Make res_mask = exp_mask for that mask.
+            for xy in exp_xy:
+                res_mask[xy[0], xy[1]] = exp_mask[xy[0], xy[1]]
 
-        numerator = exp_mean - bkgd_mean
-        denominator = (((1/exp_size) + (1/bkgd_size)) *
-                       pooled_variance) ** (1/2)
-        t = numerator / denominator
+            # Save median values.
+            medians.append((mask, median(exp_vals), median(bkgd_vals)))
 
-
-
-
-    return res_mask, object_median, bkgd_median
+    return res_mask, medians
 
 
 def find_overlap(chA_mask, chB_mask, overlap_threshold):
@@ -325,22 +322,23 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 def main():
     #filename_maskA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
     #filename_maskB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
-    filename_maskC = '/Users/Erin/PyCharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
+    filename_mask_C1 = '/Users/Erin/PyCharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
     #filename_imgA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
-    filename_imgB = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
+    filename_img_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
 
     #maskA = mask_cell(filename_maskA)
     #maskB = mask_cell(filename_maskB)
-    maskC = mask_cell(filename_maskC)
+    mask_C1 = mask_cell(filename_mask_C1)
 
-    img = read_image(filename_imgB)
+    img_C2 = read_image(filename_img_C2)
     #show_moi(img*0.001, maskA*0.2, img*0.001)
 
     #overlap = find_overlap(maskA, maskB, 0.9)
     #show_moi(maskA*0.5, overlap*0.5, maskB*0.1)
 
-    bkgd = mask_loc_bkgd(maskC, 5)
-
+    bkgd = mask_loc_bkgd(mask_C1, 5)
+    mask_C2, medians = find_object(img_C2, mask_C1, bkgd)
+    show_moi(img_C2*0.001, mask_C2*0.1, img_C2*0.001)
 
 if __name__ == "__main__":
     main()
