@@ -91,6 +91,9 @@ def mask_object(filename):
     # Note: 'outlines' is also an option.
     object_mask = data['masks']
 
+    pyplot.imshow(object_mask)
+    pyplot.show()
+
     return object_mask
 
 
@@ -108,6 +111,9 @@ def read_image(filename):
     """
 
     img = pyplot.imread(filename)
+
+    pyplot.imshow(img)
+    pyplot.show()
 
     return img
 
@@ -160,6 +166,9 @@ def mask_loc_bkgd(object_mask, radius=5):
             # This also works if dilated_mask = 0 (for the rest of the img).
             if object_mask[xy[0], xy[1]] == 0:
                 loc_bkgd_mask[xy[0], xy[1]] = dilated_mask[xy[0], xy[1]]
+
+    pyplot.imshow(loc_bkgd_mask)
+    pyplot.show()
 
     return loc_bkgd_mask
 
@@ -239,10 +248,13 @@ def find_object(img, exp_mask, loc_bkgd_mask):
         if p < 0.05:
             # Make res_mask = exp_mask for that mask.
             for xy in exp_xy:
-                res_mask[xy[0], xy[1]] = exp_mask[xy[0], xy[1]]
+                res_mask[xy[0], xy[1]] = int(exp_mask[xy[0], xy[1]])
 
             # Save median values of the object and of the local background.
             medians.append((mask, median(exp_vals), median(bkgd_vals)))
+
+    pyplot.imshow(res_mask)
+    pyplot.show()
 
     return res_mask, medians
 
@@ -342,35 +354,39 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
+    filename_img_C1_one = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-onecell.tif'
     filename_img_C2_one = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
     filename_img_C3_one = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-onecell.tif'
     filename_mask_C1_one = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
     filename_mask_C2_one = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell_seg.npy'
     filename_mask_C3_one = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-onecell_seg.npy'
 
+    img_C1_one = read_image(filename_img_C1_one)
     img_C2_one = read_image(filename_img_C2_one)
     img_C3_one = read_image(filename_img_C3_one)
     mask_C1_one = mask_object(filename_mask_C1_one)
     mask_C2_one = mask_object(filename_mask_C2_one)
     mask_C3_one = mask_object(filename_mask_C3_one)
 
-    show_moi(img_C2_one*0.001, mask_C2_one*0.2, img_C2_one*0.001)
-    show_moi(img_C3_one*0.001, mask_C3_one*0.2, img_C3_one*0.001)
+    #show_moi(img_C2_one*0.001, mask_C2_one*0.2, img_C2_one*0.001)
+    #show_moi(img_C3_one*0.001, mask_C3_one*0.2, img_C3_one*0.001)
 
     overlap_cells_one = find_overlap(mask_C2_one, mask_C3_one, overlap_threshold=0.9)
     show_moi(mask_C2_one*0.5, overlap_cells_one*0.5, mask_C3_one*0.1)
 
     bkgd_one = mask_loc_bkgd(mask_C1_one, radius=5)
-    show_moi(img_C2_one*0.001, bkgd_one*0.2, img_C2_one*0.001)
+    #show_moi(img_C2_one*0.001, bkgd_one*0.2, img_C2_one*0.001)
     granules_C2_one = find_object(img_C2_one, mask_C1_one, bkgd_one)
-    show_moi(img_C2_one*0.001, granules_C2_one*0.2, img_C2_one*0.001)
+    #show_moi(img_C2_one*0.001, granules_C2_one*0.2, img_C2_one*0.001)
 
+    #filename_img_C1_two = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C1-twocells.tif'
     #filename_img_C2_two = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
     #filename_img_C3_two = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells.tif'
     #filename_mask_C1_two = '/Users/Erin/PyCharmProjects/SG_enrichment/demo/C1-twocells_seg.npy'
     #filename_mask_C2_two = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
     #filename_mask_C3_two = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
 
+    #img_C1_two = read_image(filename_img_C1_two)
     #img_C2_two = read_image(filename_img_C2_two)
     #img_C3_two = read_image(filename_img_C3_two)
     #mask_C1_two = mask_object(filename_mask_C1_two)
