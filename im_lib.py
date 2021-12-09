@@ -106,7 +106,7 @@ def read_image(filename):
     return img
 
 
-def mask_loc_bkgd(mask, radius=5):
+def mask_loc_bkgd(object_mask, radius=5):
     """
     To create a mask, loc_bkgd_mask, surrounding the given mask.
     This can be used to get values from the local background.
@@ -123,29 +123,33 @@ def mask_loc_bkgd(mask, radius=5):
     """
 
     # Find size of mask.
-    matrix_size = numpy.shape(mask)
-    num_rows = int(matrix_size[0])
-    num_cols = int(matrix_size[1])
+    matrix_size = numpy.shape(object_mask)
 
     # Make dummy matrix for local background mask.
     loc_bkgd_mask = numpy.zeros(matrix_size)
 
     # Count number of masks in channelA.
-    num_masks = int(numpy.amax(mask))
+    num_masks = int(numpy.amax(object_mask))
 
     # Dilate masks in chA_mask. Keep mask indexing.
     struct = disk(radius)  # Make disk of given radius in pixels.
-    dilated_mask = dilation(mask, selem=struct)
+    dilated_mask = dilation(object_mask, selem=struct)
 
-    # Make local background mask.
-    for row in range(1, num_rows):
-        for col in range(1, num_cols):
-            # Make loc_bkgd_mask = 0 where chA_mask is true.
-            if mask[row, col] >= 1:
-                loc_bkgd_mask[row, col] = 0
-            # Make loc_bkgd_mask = chA_dilated int where chA_mask is false.
-            if mask[row, col] == 0:
-                loc_bkgd_mask[row, col] = dilated_mask[row, col]
+    for mask in range(1, (num_masks + 1)):
+        # Find index/position of masked pixels in exp_mask.
+        mask_index = numpy.where(dilated_mask == mask)
+        mask_xy = list(zip(mask_index[0], mask_index[1]))
+        # Makes a list of tuples with each tuple being an xy position.
+
+        for xy in mask_xy:  # xy is a tuple.
+            # If object mask is true, make loc_bkgd_mask = 0.
+            if object_mask[xy[0], xy[1]] >= 1:
+                loc_bkgd_mask[xy[0], xy[1]] = 0
+
+            # If object mask is false, make loc_bkgd_mask = dilated_mask.
+            # This will also work if dilated_mask = 0.
+            if object_mask[xy[0], xy[1]] == 0:
+                loc_bkgd_mask[xy[0], xy[1]] = dilated_mask[xy[0], xy[1]]
 
     return loc_bkgd_mask
 
@@ -320,23 +324,23 @@ def count_objects(object_mask, lower_size_limit, upper_size_limit):
 
 
 def main():
-    filename_mask_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
-    filename_mask_C3 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
-    #filename_mask_C1 = '/Users/Erin/PyCharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
+    #filename_mask_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells_seg.npy'
+    #filename_mask_C3 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C3-twocells_seg.npy'
+    filename_mask_C1 = '/Users/Erin/PyCharmProjects/SG_enrichment/demo/C1-onecell_seg.npy'
     #filename_imgA = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-twocells.tif'
     #filename_img_C2 = '/Users/Erin/PycharmProjects/SG_enrichment/demo/C2-onecell.tif'
 
-    mask_C2 = mask_cell(filename_mask_C2)
-    mask_C3 = mask_cell(filename_mask_C3)
-    #mask_C1 = mask_cell(filename_mask_C1)
+    #mask_C2 = mask_cell(filename_mask_C2)
+    #mask_C3 = mask_cell(filename_mask_C3)
+    mask_C1 = mask_cell(filename_mask_C1)
 
     #img_C2 = read_image(filename_img_C2)
     #show_moi(img*0.001, maskA*0.2, img*0.001)
 
-    overlap = find_overlap(mask_C2, mask_C3, 0.9)
-    show_moi(mask_C2*0.5, overlap*0.5, mask_C3*0.1)
+    #overlap = find_overlap(mask_C2, mask_C3, 0.9)
+    #show_moi(mask_C2*0.5, overlap*0.5, mask_C3*0.1)
 
-    #bkgd = mask_loc_bkgd(mask_C1, 5)
+    bkgd = mask_loc_bkgd(mask_C1, 5)
     #mask_C2, medians = find_object(img_C2, mask_C1, bkgd)
     #show_moi(img_C2*0.001, mask_C2*0.1, img_C2*0.001)
 
